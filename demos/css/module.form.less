@@ -1,0 +1,269 @@
+@import "app.reset.less";
+
+//-------------------------BASE COLORS-------------------------//
+@background-color: #EA4444;
+@font-alternate: #FF8A8A;
+
+@dark-blue: #555555;
+@white: #ffffff;
+@error-red: #f46166;
+
+//---------------------------HELPERS---------------------------//
+
+.clearfix() {
+	*zoom: 1;
+	&:before, &:after {
+		display: table;
+		content: " ";
+		line-height: 0;
+	}
+	&:after {
+		clear: both;
+	}
+}
+.box-sizing() {
+	-moz-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
+}
+
+.hidden {
+	display: none;
+	visibility: hidden;
+}
+
+//-------------------------BASE STYLE-------------------------//
+
+body{
+    #content-ctn{
+        width: 100%;
+
+        #header{
+            width: 100%;
+            background-color: @background-color;
+
+            h1{
+                font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+                font-size: 48px;
+                color: @white;
+                text-align: center;
+                padding: 10px 0;
+
+                span{
+                    color: @font-alternate;
+                }
+            }
+        }
+
+        form {
+            .clearfix();
+
+            width: 1024px;
+            margin: 0 auto;
+            font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+            padding: 40px 0;
+
+            .inner{
+                float: left;
+                width: 50%;
+
+                .row {
+                    .clearfix();
+
+                    p, .input-ctn{
+                        float: left;
+                    }
+
+                    p, .checkbox, .radio{
+                        margin: 10px 10px 10px 0;
+                    }
+
+                    .file{
+                        margin: 5px 10px 5px 0;
+                    }
+
+                    p{
+                        font-size: 16px;
+                        width: 150px;
+                        text-align: right;
+                    }
+                }
+            }
+
+            .btn{
+                display: inline-block;
+                background-color: @background-color;
+                margin: 0 auto;
+
+                &.toggler-btn{
+                    float: left;
+                    margin-left: 10px;
+
+                    a{
+                        font-size: 15px;
+                        font-weight: normal;
+                        padding: 10px 9px;
+                    }
+                }
+
+                a{
+                    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+                    font-size: 18px;
+                    font-weight: bold;
+                    color: @white;
+                    text-decoration: none;
+                    display: block;
+                    padding: 10px 20px;
+                }
+            }
+
+            .full{
+                float: left;
+                clear: both;
+                width: 100%;
+                padding: 20px 0;
+
+                .btn{
+                    display: block;
+                    width: 101px;
+                }
+            }
+
+            .input-ctn {
+                max-width: 205px;
+                position: relative;
+                float: left;
+                display: block;
+                .box-sizing();
+                height: 35px;
+                margin-bottom: 10px;
+
+                &.no-margin {
+                    margin-bottom: 0px;
+                }
+
+                .input-messages-ctn {
+                    position: relative;
+                    width: 100%;
+                    height: 100%;
+                }
+
+                input, .input-messages {
+                    .box-sizing();
+                    padding: 0 20px;
+                    margin: 0;
+                    width: 100%;
+                    height: 100%;
+                    color: @dark-blue;
+                    font-size: 16px;
+                    border: 2px solid transparent;
+                    -webkit-font-smoothing: antialiased;
+                }
+
+                input {
+                    border: 2px solid @dark-blue;
+                    &.error {
+                        border: 2px solid @error-red;
+                    }
+                }
+
+
+                .input-messages {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    z-index: 1;
+                    background-image: url("../img/ie-bg.png");
+                    border: none;
+                    border-left: 2px solid transparent;
+                    border-right: 2px solid transparent;
+                    line-height: 35px;
+                    display: none;
+                    cursor: text;
+                }
+
+                textarea {
+                    .box-sizing();
+                    padding: 20px;
+                    margin: 0;
+                    width: 100%;
+                    height: 100%;
+                    border: 2px solid transparent;
+                    font-size: 16px;
+
+                    &.error {
+                        border: 2px solid @error-red;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width:1023px){
+    body{
+        #content-ctn{
+            form{
+                width: 100%;
+
+                .inner{
+                    width: 520px;
+                    margin: 0 auto;
+                    float: none;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width:550px){
+    body{
+        #content-ctn{
+            form{
+                .inner{
+                    width: 100%;
+
+                    .row{
+                        p, .toggler-btn, .input-ctn, #active_inactive, input{
+                            float: none;
+                            text-align: center;
+                        }
+
+                        .checkbox, .radio, .file{
+                            margin: 10px auto;
+                        }
+
+                        .checkbox{
+                            width: 145px;
+                        }
+
+                        .radio{
+                            width: 115px;
+                        }
+
+                        .file{
+                            width: 256px;
+                        }
+
+                        .input-ctn{
+                            margin: 0 auto;
+                        }
+
+                        .toggler-btn{
+                            position: relative;
+                            left: 50%;
+                            margin-left: -68px;
+                            margin-top: 10px;
+
+                        }
+
+                        p{
+                            width: inherit;
+                            margin-bottom: 2px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

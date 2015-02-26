@@ -1,0 +1,342 @@
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+.hidden {
+  display: none;
+  visibility: hidden;
+}
+body #content-ctn {
+  width: 100%;
+}
+body #content-ctn #header {
+  width: 100%;
+  background-color: #ea4444;
+}
+body #content-ctn #header h1 {
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 48px;
+  color: #ffffff;
+  text-align: center;
+  padding: 10px 0;
+}
+body #content-ctn #header h1 span {
+  color: #ff8a8a;
+}
+body #content-ctn form {
+  *zoom: 1;
+  width: 1024px;
+  margin: 0 auto;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  padding: 40px 0;
+}
+body #content-ctn form:before,
+body #content-ctn form:after {
+  display: table;
+  content: " ";
+  line-height: 0;
+}
+body #content-ctn form:after {
+  clear: both;
+}
+body #content-ctn form .inner {
+  float: left;
+  width: 50%;
+}
+body #content-ctn form .inner .row {
+  *zoom: 1;
+}
+body #content-ctn form .inner .row:before,
+body #content-ctn form .inner .row:after {
+  display: table;
+  content: " ";
+  line-height: 0;
+}
+body #content-ctn form .inner .row:after {
+  clear: both;
+}
+body #content-ctn form .inner .row p,
+body #content-ctn form .inner .row .input-ctn {
+  float: left;
+}
+body #content-ctn form .inner .row p,
+body #content-ctn form .inner .row .checkbox,
+body #content-ctn form .inner .row .radio {
+  margin: 10px 10px 10px 0;
+}
+body #content-ctn form .inner .row .file {
+  margin: 5px 10px 5px 0;
+}
+body #content-ctn form .inner .row p {
+  font-size: 16px;
+  width: 150px;
+  text-align: right;
+}
+body #content-ctn form .btn {
+  display: inline-block;
+  background-color: #ea4444;
+  margin: 0 auto;
+}
+body #content-ctn form .btn.toggler-btn {
+  float: left;
+  margin-left: 10px;
+}
+body #content-ctn form .btn.toggler-btn a {
+  font-size: 15px;
+  font-weight: normal;
+  padding: 10px 9px;
+}
+body #content-ctn form .btn a {
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+  text-decoration: none;
+  display: block;
+  padding: 10px 20px;
+}
+body #content-ctn form .full {
+  float: left;
+  clear: both;
+  width: 100%;
+  padding: 20px 0;
+}
+body #content-ctn form .full .btn {
+  display: block;
+  width: 101px;
+}
+body #content-ctn form .input-ctn {
+  max-width: 205px;
+  position: relative;
+  float: left;
+  display: block;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  height: 35px;
+  margin-bottom: 10px;
+}
+body #content-ctn form .input-ctn.no-margin {
+  margin-bottom: 0px;
+}
+body #content-ctn form .input-ctn .input-messages-ctn {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+body #content-ctn form .input-ctn input,
+body #content-ctn form .input-ctn .input-messages {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 0 20px;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  color: #555555;
+  font-size: 16px;
+  border: 2px solid transparent;
+  -webkit-font-smoothing: antialiased;
+}
+body #content-ctn form .input-ctn input {
+  border: 2px solid #555555;
+}
+body #content-ctn form .input-ctn input.error {
+  border: 2px solid #f46166;
+}
+body #content-ctn form .input-ctn .input-messages {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  background-image: url("../img/ie-bg.png");
+  border: none;
+  border-left: 2px solid transparent;
+  border-right: 2px solid transparent;
+  line-height: 35px;
+  display: none;
+  cursor: text;
+}
+body #content-ctn form .input-ctn textarea {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 20px;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  border: 2px solid transparent;
+  font-size: 16px;
+}
+body #content-ctn form .input-ctn textarea.error {
+  border: 2px solid #f46166;
+}
+@media screen and (max-width: 1023px) {
+  body #content-ctn form {
+    width: 100%;
+  }
+  body #content-ctn form .inner {
+    width: 520px;
+    margin: 0 auto;
+    float: none;
+  }
+}
+@media screen and (max-width: 550px) {
+  body #content-ctn form .inner {
+    width: 100%;
+  }
+  body #content-ctn form .inner .row p,
+  body #content-ctn form .inner .row .toggler-btn,
+  body #content-ctn form .inner .row .input-ctn,
+  body #content-ctn form .inner .row #active_inactive,
+  body #content-ctn form .inner .row input {
+    float: none;
+    text-align: center;
+  }
+  body #content-ctn form .inner .row .checkbox,
+  body #content-ctn form .inner .row .radio,
+  body #content-ctn form .inner .row .file {
+    margin: 10px auto;
+  }
+  body #content-ctn form .inner .row .checkbox {
+    width: 145px;
+  }
+  body #content-ctn form .inner .row .radio {
+    width: 115px;
+  }
+  body #content-ctn form .inner .row .file {
+    width: 256px;
+  }
+  body #content-ctn form .inner .row .input-ctn {
+    margin: 0 auto;
+  }
+  body #content-ctn form .inner .row .toggler-btn {
+    position: relative;
+    left: 50%;
+    margin-left: -68px;
+    margin-top: 10px;
+  }
+  body #content-ctn form .inner .row p {
+    width: inherit;
+    margin-bottom: 2px;
+  }
+}

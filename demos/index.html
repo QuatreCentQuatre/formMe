@@ -1,0 +1,134 @@
+<html>
+<head>
+	<script src="../vendor/jquery-1.10.2.min.js"></script>
+	<script src="https://raw.githubusercontent.com/QuatreCentQuatre/validateMe/master/src/js/me.help.js"></script>
+	<script src="https://raw.githubusercontent.com/QuatreCentQuatre/validateMe/master/src/js/me.validate.js"></script>
+    <script src="https://raw.githubusercontent.com/QuatreCentQuatre/validateMe/master/src/js/me.validate-maskedinput.js"></script>
+	<script src="../src/me.form.js"></script>
+	<script src="app.main.js"></script>
+	<link rel="stylesheet" type="text/css" href="../src/css/module.form.css">
+	<style>
+		.error{color:red;}
+	</style>
+</head>
+<body>
+<div id="content-ctn">
+	<div id="header">
+		<h1>
+			form<span>Me</span>
+		</h1>
+	</div>
+	<form class="form-account-login" method="get" action="" ajax="false">
+		<div class="inner">
+			<div class="row">
+				<p>No Placeholder</p>
+				<div class="input-ctn">
+					<div class="input-messages-ctn">
+						<div class="input-messages" me:validate:related="no-placeholder"></div>
+						<input name="no-placeholder" type="text" value="" autocomplete="off" />
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<p>Type Postal</p>
+				<div class="input-ctn">
+					<div class="input-messages-ctn">
+						<div class="input-messages" me:validate:related="postal"></div>
+						<input name="postal" type="text" value="" me:validate:placeholder="Your postal code" autocomplete="off" />
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<p>Type Phone</p>
+				<div class="input-ctn">
+					<div class="input-messages-ctn">
+						<div class="input-messages" me:validate:related="phone"></div>
+						<input name="phone" type="text" value="" me:validate:placeholder="Your phone number" autocomplete="off" />
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<p>Type Email</p>
+				<div class="input-ctn">
+					<div class="input-messages-ctn">
+						<div class="input-messages" me:validate:related="email"></div>
+						<input name="email" type="text" value="" me:validate:placeholder="Your email" autocomplete="off" />
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<p>Copy Email</p>
+				<div class="input-ctn">
+					<div class="input-messages-ctn">
+						<div class="input-messages" me:validate:related="email-copy"></div>
+						<input name="email-copy" type="text" value="" me:validate:placeholder="Re-enter your email" autocomplete="off" />
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<p>Password</p>
+				<div class="input-ctn">
+					<div class="input-messages-ctn">
+						<div class="input-messages" me:validate:related="password"></div>
+						<input name="password" type="password" value="" me:validate:placeholder="Your password" autocomplete="off" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="inner">
+			<div class="row">
+				<p>Not required</p>
+				<div class="input-ctn">
+					<div class="input-messages-ctn">
+						<div class="input-messages" me:validate:related="not-required"></div>
+						<input name="not-required" type="text" me:validate:placeholder="Name" value="" autocomplete="off" />
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<p>Active/Inactive Field</p>
+				<div class="input-ctn">
+					<div class="input-messages-ctn">
+						<div class="input-messages"></div>
+						<input id="active_inactive" name="active_inactive" type="text" value="Inactive Field" me:validate:placeholder="Active Field" autocomplete="off" />
+					</div>
+				</div>
+				<div class="btn toggler-btn">
+					<a id="active_toggler" href="#">Toggle activeness</a>
+				</div>
+			</div>
+			<div class="row">
+				<p>Checkbox</p>
+				<div class="checkbox">
+					<input type="checkbox" value="1" name="checkbox" id="checkbox">
+					<label for="checkbox">
+						Checkbox Label
+					</label>
+				</div>
+			</div>
+			<div class="row">
+				<p>Radio</p>
+				<div class="radio">
+					<input type="radio" value="1" name="radio" id="radio">
+					<label for="radio">
+						Radio Label
+					</label>
+				</div>
+			</div>
+			<div class="row">
+				<p>File</p>
+				<div class="file">
+					<input type="file" id="file" name="file"/>
+				</div>
+			</div>
+		</div>
+		<input class="hidden" type="submit" value="Submit"/>
+		<div class="full">
+			<div class="btn">
+				<a class="btn-submit" href="#">Submit</a>
+			</div>
+		</div>
+	</form>
+</div>
+</body>
+</html>
