@@ -259,7 +259,7 @@
 
 	/**
 	 *
-	 * addField
+	 * initForm
 	 * set the basics of formMe
 	 *
 	 * @return  object scope
