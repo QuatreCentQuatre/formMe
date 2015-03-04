@@ -1,6 +1,6 @@
 /*
  * FormMe from the MeLibs
- * Librairy to handle form easily
+ * Library that let you easily handle a full form validation
  * Dependencies :
  *  - Jquery
  *  - jqueryMaskedInput
@@ -37,8 +37,8 @@
 		'handleValidationErrorField',
 		'handleValidationSuccessField',
 		'onAllSuccess',
-		'onSuccess',
 		'onAllError',
+		'onSuccess',
 		'onError'
 	];
 
@@ -360,8 +360,62 @@
 
 	/**
 	 *
+	 * handleAjaxSend
+	 * this will submit your form via ajax if you set ajax to true
+	 *
+	 * @param   data object
+	 * @return  void
+	 * @access  public
+	 *
+	 */
+	proto.handleAjaxSend = function(data) {
+		if (this.debug) {console.info(this.dname, "handleAjaxSend");}
+		if(this.antiSpam) {return;}
+		this.antiSpam = true;
+
+		$.ajax({
+			method: this.type,
+			url: this.action,
+			data: data,
+			type: 'json',
+			dataType: 'json',
+			success: Me.help.proxy(this.ajaxSuccess, this),
+			error: Me.help.proxy(this.ajaxError, this)
+		});
+	};
+
+	/**
+	 *
+	 * onValidationSuccess
+	 * this is where you determine what happen when the validation has been successful
+	 *
+	 * @param   fields array
+	 * @return  object scope
+	 * @access  public
+	 *
+	 */
+	proto.onValidationSuccess = function(fields) {
+		if (this.debug) {console.info(this.dname, "onValidationSuccess");}
+		var field;
+		for (var fieldKey = 0; fieldKey < fields.length; fieldKey++) {
+			field = fields[fieldKey];
+			this.handleValidationSuccessField(field);
+		}
+
+		if (this.$messages) {
+			this.$messages.find('.error').addClass('hide');
+			this.$messages.find('.error-none').removeClass('hide');
+		}
+
+		if (this.tracker_name) {this.trackingMessages.onValidationSuccess();}
+		if (this.ajax) {this.handleAjaxSend(privatesMethods.reformatFormData.call(this, this.$form.serializeArray()));}
+		return this;
+	};
+
+	/**
+	 *
 	 * onValidationError
-	 * handle the $form submit
+	 * this is where you determine what happen when the validation has trigger an error
 	 *
 	 * @param   fields array
 	 * @param   errorFields array
@@ -371,7 +425,7 @@
 	 */
 	proto.onValidationError = function(fields, errorFields) {
 		if (this.debug) {console.info(this.dname, "onValidationError");}
-		var field = null;
+		var field;
 		for (var fieldKey = 0; fieldKey < fields.length; fieldKey++) {
 			field = fields[fieldKey];
 			this.handleValidationSuccessField(field);
@@ -399,24 +453,16 @@
 		return this;
 	};
 
-	proto.onValidationSuccess = function(fields) {
-		if (this.debug) {console.info(this.dname, "onValidationSuccess");}
-		var field;
-		for (var fieldKey = 0; fieldKey < fields.length; fieldKey++) {
-			field = fields[fieldKey];
-			this.handleValidationSuccessField(field);
-		}
-
-		if (this.$messages) {
-			this.$messages.find('.error').addClass('hide');
-			this.$messages.find('.error-none').removeClass('hide');
-		}
-
-		if (this.tracker_name) {this.trackingMessages.onValidationSuccess();}
-		if (this.ajax) {this.formSend(privatesMethods.reformatFormData.call(this, this.$form.serializeArray()));}
-		return this;
-	};
-
+	/**
+	 *
+	 * handleValidationSuccessField
+	 * this is where you determine what happen with the field that don't have an error
+	 *
+	 * @param   field object
+	 * @return  void
+	 * @access  public
+	 *
+	 */
 	proto.handleValidationSuccessField = function(field) {
 		field.$el.removeClass('error');
 		if (field.$skin) {field.$skin.removeClass('error');}
@@ -430,6 +476,16 @@
 		}
 	};
 
+	/**
+	 *
+	 * handleValidationErrorField
+	 * this is where you determine what happen with the field that have an error
+	 *
+	 * @param   field object
+	 * @return  void
+	 * @access  public
+	 *
+	 */
 	proto.handleValidationErrorField = function(field) {
 		if (this.debug) {console.info(this.dname, "handleValidationErrorField", field);}
 		field.$el.addClass('error');
@@ -444,32 +500,55 @@
 		}
 	};
 
-	proto.formSend = function(data) {
-		if (this.debug) {console.info(this.dname, "formSend");}
-		if(this.antiSpam) {return;}
-		this.antiSpam = true;
-
-		$.ajax({
-			method: this.type,
-			url: this.action,
-			data: data,
-			type: 'json',
-			dataType: 'json',
-			success: Me.help.proxy(this.ajaxSuccess, this),
-			error: Me.help.proxy(this.ajaxError, this)
-		});
-	};
-
+	/**
+	 *
+	 * ajaxSuccess
+	 * this is where you can say what happen after the form was send via ajax and obtain a success
+	 *
+	 * @param   data object
+	 * @return  void
+	 * @access  public
+	 *
+	 */
 	proto.ajaxSuccess = function(data) {
 		if (this.debug) {console.info(this.dname, "ajaxSuccess");}
 		this.onAllSuccess.call(this, data);
-		this.onSuccess.call(this.form_scope, data);
+		this.onSuccess.call(this, this.form_scope, data);
 		this.antiSpam = false;
 		if (data.response && data.response.success == 1) {
 			if (this.tracker_name) {this.trackingMessages.onAjaxSendSuccess();}
 		}
 	};
 
+	/**
+	 *
+	 * ajaxError
+	 * this is where you can say what happen after the form was send via ajax and obtain an error
+	 *
+	 * @param   error object
+	 * @return  void
+	 * @access  public
+	 *
+	 */
+	proto.ajaxError = function(error) {
+		if (this.debug) {console.info(this.dname, "ajaxError");}
+		this.onAllError.call(this, error);
+		this.onError.call(this, this.form_scope, error);
+		this.antiSpam = false;
+		if (this.tracker_name) {this.trackingMessages.onAjaxSendError();}
+	};
+
+	/**
+	 *
+	 * onAllSuccess
+	 * this is a methods you can overwrite to tell all your form to do something if ajax call have been successful
+	 * for now it will only reset the fields
+	 *
+	 * @param   data object
+	 * @return  void
+	 * @access  public
+	 *
+	 */
 	proto.onAllSuccess = function(data) {
 		if (this.debug) {console.info(this.dname, "onAllSuccess");}
 		if (data.response && data.response.success == 1) {
@@ -477,25 +556,49 @@
 		}
 	};
 
-	proto.onSuccess = function(data) {
-		if (this.debug) {console.info(this.dname, "onSuccess");}
-		console.log(data);
-	};
-
-	proto.ajaxError = function(error) {
-		if (this.debug) {console.info(this.dname, "ajaxError");}
-		this.onAllError.call(this, error);
-		this.onError.call(this.form_scope, error);
-		this.antiSpam = false;
-		if (this.tracker_name) {this.trackingMessages.onAjaxSendError();}
-	};
-
+	/**
+	 *
+	 * onAllError
+	 * this is a methods you can overwrite to tell all your form to do something if ajax call return you an error
+	 *
+	 * @param   error object
+	 * @return  void
+	 * @access  public
+	 *
+	 */
 	proto.onAllError = function(error) {
 		if (this.debug) {console.info(this.dname, "onAllError");}
 
 	};
 
-	proto.onError = function(error) {
+	/**
+	 *
+	 * onSuccess
+	 * this method is required in your instance parameters
+	 *
+	 * @param   formScope scope
+	 * @param   data object
+	 * @return  void
+	 * @access  public
+	 *
+	 */
+	proto.onSuccess = function(formScope, data) {
+		if (this.debug) {console.info(this.dname, "onSuccess");}
+		console.log(data);
+	};
+
+	/**
+	 *
+	 * onError
+	 * this method is required in your instance parameters
+	 *
+	 * @param   formScope scope
+	 * @param   error object
+	 * @return  void
+	 * @access  public
+	 *
+	 */
+	proto.onError = function(formScope, error) {
 		if (this.debug) {console.info(this.dname, "onError");}
 		console.log(error);
 	};
