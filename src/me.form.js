@@ -243,7 +243,7 @@
 		this.tracker_name   = (this.$form.attr('me\\:validate\\:analytics')) ? this.$form.attr('me\\:validate\\:analytics') : null;
 
 		this.$messages      = (this.$messages) ? this.$messages : (this.$form.find('.form-messages').length > 0) ? this.$form.find('.form-messages') : null;
-		this.$btn           = (this.$btn) ? this.$btn : (this.$form.find('.btn-submit').length > 0) ? this.$form.find('.btn-submit') : null;
+		this.$btn           = (this.$btn) ? this.$form.find(this.$btn) : (this.$form.find('.btn-submit').length > 0) ? this.$form.find('.btn-submit') : null;
 
 		this.ajax           = (!this.$form.attr('ajax')) ? this.ajax : (this.$form.attr('ajax') == "true");
 		this.type           = this.$form.attr('method');
