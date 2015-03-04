@@ -34,6 +34,8 @@
 		'accepted_empty',
 		'onValidationError',
 		'onValidationSuccess',
+		'handleValidationErrorField',
+		'handleValidationSuccessField',
 		'onAllSuccess',
 		'onSuccess',
 		'onAllError',
