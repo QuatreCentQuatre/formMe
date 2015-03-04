@@ -1,7 +1,10 @@
 /*
  * FormMe from the MeLibs
  * Librairy to handle form easily
- * Requires : Jquery, jqueryMaskedInput, ValidateMe
+ * Dependencies :
+ *  - Jquery
+ *  - jqueryMaskedInput
+ *  - ValidateMe
  *
  * Private Methods :
  * 	- reformatFormData
@@ -12,9 +15,7 @@
 
 (function($, window, document, undefined) {
 	"use strict";
-
 	/* Private Variables */
-	var $scope;
 	var instanceID   = 1;
 	var instanceName = "FormMe-";
 	var defaults     = {
@@ -52,17 +53,14 @@
 	 *
 	 */
 	privatesMethods.reformatFormData = function(data) {
+		var $scope    = this;
 		var finalData = {};
-		var scope     = this;
 		$.each(data, function(index, item) {
-			if (item.name == "postal_code") {
-				item.value = item.value.toUpperCase();
-			}
-
+			if (item.name == "postal_code") {item.value = item.value.toUpperCase();}
 			var checkIfEmpty = true;
-			if (scope.accepted_empty && $.inArray(item.name, scope.accepted_empty) != -1) {checkIfEmpty = false;}
+			if ($scope.accepted_empty && $.inArray(item.name, $scope.accepted_empty) != -1) {checkIfEmpty = false;}
 			if (checkIfEmpty && item.value == "") {return;}
-			if (scope.disabled && $.inArray(item.name, scope.disabled) != -1) {return;}
+			if ($scope.disabled && $.inArray(item.name, $scope.disabled) != -1) {return;}
 			finalData[item.name] = item.value;
 		});
 		return finalData;
@@ -70,44 +68,44 @@
 
 	/* Builder Method */
 	var FormMe = function($el, options) {
-		$scope = this;
-		$scope.__construct($el, options);
+		this.__construct($el, options);
 	};
-	var p = FormMe.prototype;
-	p.debug          = null;
-	p.id             = null;
-	p.name           = null;
-	p.debug_name     = null;
-	p.tracker_name   = null; //check: if TrackMe exist and $scope.$form.attr('me\\:validate\\:analytics');
-	p.options        = null;
+	var proto = FormMe.prototype;
+
+	proto.debug          = null;
+	proto.id             = null;
+	proto.name           = null;
+	proto.debug_name     = null;
+	proto.tracker_name   = null; //check: if TrackMe exist and this.$form.attr('me\\:validate\\:analytics');
+	proto.options        = null;
 
 	/* Publics Variables */
-	p.$form          = null;
-	p.$messages      = null; //check: $scope.$form.find('.form-messages');
-	p.$btn 	         = null; //check: $scope.$form.find('.btn-submit');
+	proto.$form          = null;
+	proto.$messages      = null; //check: this.$form.find('.form-messages');
+	proto.$btn 	         = null; //check: this.$form.find('.btn-submit');
 
-	p.form_scope     = null;
-	p.ajax           = null; //check: $scope.$form.attr('ajax');
-	p.type           = null; //check: $scope.$form.attr('method');
-	p.action         = null; //check: $scope.$form.attr('action');
-	p.skinMe_enabled = null; //check: if SkinMe exist and $scope.$form.hasClass('skinMe');
+	proto.form_scope     = null;
+	proto.ajax           = null; //check: this.$form.attr('ajax');
+	proto.type           = null; //check: this.$form.attr('method');
+	proto.action         = null; //check: this.$form.attr('action');
+	proto.skinMe_enabled = null; //check: if SkinMe exist and this.$form.hasClass('skinMe');
 
-	p.fields         = null;
-	p.disabled       = null;
-	p.accepted_empty = null;
+	proto.fields         = null;
+	proto.disabled       = null;
+	proto.accepted_empty = null;
 
-	p.trackingMessages = {
+	proto.trackingMessages = {
 		onValidationErreur: function() {
-			Me.track.event('formulaire', $scope.tracker_name, 'validation non réussite');
+			Me.track.event('formulaire', this.tracker_name, 'validation non réussite');
 		},
 		onValidationSuccess: function() {
-			Me.track.event('formulaire', $scope.tracker_name, 'validation réussite');
+			Me.track.event('formulaire', this.tracker_name, 'validation réussite');
 		},
 		onAjaxSendSuccess: function() {
-			Me.track.event('formulaire', $scope.tracker_name, 'envoi réussi');
+			Me.track.event('formulaire', this.tracker_name, 'envoi réussi');
 		},
 		onAjaxSendError: function() {
-			Me.track.event('formulaire', $scope.tracker_name, 'envoi non réussi');
+			Me.track.event('formulaire', this.tracker_name, 'envoi non réussi');
 		}
 	};
 
@@ -118,24 +116,23 @@
 	 *
 	 * @param   $el      the current form $element
 	 * @param   options  all the options that you need
-	 * @return  mixed    null || scope
-	 * @access  public
-	 * @constructor
+	 * @return  object    null || scope
+	 * @access  private
 	 */
-	p.__construct = function($el, options) {
-		$scope.id    = instanceID;
-		$scope.name  = instanceName + String($scope.id);
-		$scope.dname = $scope.name + ":: ";
-		$scope.$form = $el;
-		$scope.setOptions(options);
+	proto.__construct = function($el, options) {
+		this.id    = instanceID;
+		this.name  = instanceName + String(this.id);
+		this.dname = this.name + ":: ";
+		this.$form = $el;
+		this.setOptions(options);
 
-		if (!$scope.__validateDependencies()) {return null;}
-		if (!$scope.__validateOptions()) {return null;}
+		if (!this.__validateDependencies()) {return null;}
+		if (!this.__validateOptions()) {return null;}
 
-		$scope.setVariables();
-		$scope.initForm();
+		this.setVariables();
+		this.initForm();
 		instanceID ++;
-		return $scope;
+		return this;
 	};
 
 	/**
@@ -144,21 +141,19 @@
 	 * Will check if you got all the dependencies needed to use that plugins
 	 *
 	 * @return  boolean
-	 * @access  public
+	 * @access  private
 	 *
 	 */
-	p.__validateDependencies = function() {
+	proto.__validateDependencies = function() {
 		var isValid = true;
 		if (!window.jQuery) {
 			isValid = false;
-			console.warn($scope.dname + "You need jquery");
+			console.warn(this.dname + "You need jquery");
 		}
 		if (!window.Me || !window.Me.validate) {
 			isValid = false;
-			console.warn($scope.dname + "You need ValidateMe (https://github.com/QuatreCentQuatre/validateMe/)");
+			console.warn(this.dname + "You need ValidateMe (https://github.com/QuatreCentQuatre/validateMe/)");
 		}
-
-		delete this;
 		return isValid;
 	};
 
@@ -168,32 +163,30 @@
 	 * Will check if you got all the required options needed to use that plugins
 	 *
 	 * @return  boolean
-	 * @access  public
+	 * @access  private
 	 *
 	 */
-	p.__validateOptions = function() {
+	proto.__validateOptions = function() {
 		var isValid = true;
-		if (!$scope.$form.length > 0) {
+		if (!this.$form.length > 0) {
 			isValid = false;
-			console.warn($scope.dname + "Couldn't find associated form ", $scope.$form);
+			console.warn(this.dname + "Couldn't find associated form ", this.$form);
 		}
 
-		if (isValid && !$scope.$form.attr('method')) {
+		if (isValid && !this.$form.attr('method')) {
 			isValid = false;
-			console.warn($scope.dname + "You need to add method to your form ", $scope.$form.attr('method'));
+			console.warn(this.dname + "You need to add method to your form ", this.$form.attr('method'));
 		}
 
-		if (isValid && $scope.$form.hasClass('skinMe') && (!window.Me || !Me.skin)) {
+		if (isValid && this.$form.hasClass('skinMe') && (!window.Me || !Me.skin)) {
 			isValid = false;
-			console.warn($scope.dname + "You need skinMe if you wanna enabled that option (https://github.com/QuatreCentQuatre/skinMe/)");
+			console.warn(this.dname + "You need skinMe if you wanna enabled that option (https://github.com/QuatreCentQuatre/skinMe/)");
 		}
 
-		if (isValid && $scope.$form.attr('me:validate:analytics') && (!window.Me || !Me.track)) {
+		if (isValid && this.$form.attr('me:validate:analytics') && (!window.Me || !Me.track)) {
 			isValid = false;
-			console.warn($scope.dname + "if you want autotracking enabled you need trackMe (https://github.com/QuatreCentQuatre/trackMe/)");
+			console.warn(this.dname + "if you want autotracking enabled you need trackMe (https://github.com/QuatreCentQuatre/trackMe/)");
 		}
-
-		delete this;
 		return isValid;
 	};
 
@@ -207,7 +200,8 @@
 	 * @access  public
 	 *
 	 */
-	p.setOptions = function(options) {
+	proto.setOptions = function(options) {
+		var $scope = this;
 		var settings = Me.help.extend({}, defaults);
 		settings = Me.help.extend(settings, options);
 		$.each(settings, function(index, value) {
@@ -216,8 +210,8 @@
 				delete settings[index];
 			}
 		});
-		$scope.options = settings;
-		return $scope;
+		this.options = settings;
+		return this;
 	};
 
 	/**
@@ -229,8 +223,8 @@
 	 * @access  public
 	 *
 	 */
-	p.getOptions = function() {
-		return $scope.options;
+	proto.getOptions = function() {
+		return this.options;
 	};
 
 	/**
@@ -239,44 +233,44 @@
 	 * it will set all basic variables from the plugins
 	 *
 	 * @return  object scope
-	 * @access  public
+	 * @access  private
 	 *
 	 */
-	p.setVariables = function() {
-		if ($scope.debug) {console.info($scope.dname, "setVariables");}
-		$scope.tracker_name   = ($scope.$form.attr('me\\:validate\\:analytics')) ? $scope.$form.attr('me\\:validate\\:analytics') : null;
+	proto.setVariables = function() {
+		if (this.debug) {console.info(this.dname, "setVariables");}
+		this.tracker_name   = (this.$form.attr('me\\:validate\\:analytics')) ? this.$form.attr('me\\:validate\\:analytics') : null;
 
-		$scope.$messages      = ($scope.$messages) ? $scope.$messages : ($scope.$form.find('.form-messages').length > 0) ? $scope.$form.find('.form-messages') : null;
-		$scope.$btn           = ($scope.$btn) ? $scope.$btn : ($scope.$form.find('.btn-submit').length > 0) ? $scope.$form.find('.btn-submit') : null;
+		this.$messages      = (this.$messages) ? this.$messages : (this.$form.find('.form-messages').length > 0) ? this.$form.find('.form-messages') : null;
+		this.$btn           = (this.$btn) ? this.$btn : (this.$form.find('.btn-submit').length > 0) ? this.$form.find('.btn-submit') : null;
 
-		$scope.ajax           = (!$scope.$form.attr('ajax')) ? $scope.ajax : ($scope.$form.attr('ajax') == "true");
-		$scope.type           = $scope.$form.attr('method');
-		$scope.action         = ($scope.$form.attr('action')) ? $scope.$form.attr('action') : $scope.action;
-		$scope.skinMe_enabled = $scope.$form.hasClass('skinMe');
+		this.ajax           = (!this.$form.attr('ajax')) ? this.ajax : (this.$form.attr('ajax') == "true");
+		this.type           = this.$form.attr('method');
+		this.action         = (this.$form.attr('action')) ? this.$form.attr('action') : this.action;
+		this.skinMe_enabled = this.$form.hasClass('skinMe');
 
-		return $scope;
+		return this;
 	};
 
 	/**
 	 *
-	 * addField
+	 * initForm
 	 * set the basics of formMe
 	 *
 	 * @return  object scope
-	 * @access  public
+	 * @access  private
 	 *
 	 */
-	p.initForm = function() {
-		if ($scope.debug) {console.info($scope.dname, "initForm");}
-		if ($scope.skinMe_enabled) {$scope.skinMe = new Me.skin($scope.$form);}
-		$scope.validation = new Me.validate($scope.$form, {scope:$scope, debug:$scope.debug, onError:$scope.onValidationError, onSuccess:$scope.onValidationSuccess});
+	proto.initForm = function() {
+		var $scope = this;
+		if (this.debug) {console.info(this.dname, "initForm");}
+		if (this.skinMe_enabled) {this.skinMe = new Me.skin(this.$form);}
+		this.validation = new Me.validate(this.$form, {scope:this, debug:this.debug, onError:this.onValidationError, onSuccess:this.onValidationSuccess});
+		$.each(this.fields, function(index, field) {$scope.addField(field);});
 
-		$.each($scope.fields, function(index, field) {$scope.addField(field);});
+		if (this.$btn) {this.$btn.on('click.formMe', Me.help.proxy(this.clickSubmitHandler, this));}
+		this.$form.on('submit.formMe', Me.help.proxy(this.submitHandler, this));
 
-		if ($scope.$btn) {$scope.$btn.on('click.formMe', Me.help.proxy($scope.clickSubmitHandler, $scope));}
-		$scope.$form.on('submit.formMe', Me.help.proxy($scope.submitHandler, $scope));
-
-		return $scope;
+		return this;
 	};
 
 	/**
@@ -289,10 +283,10 @@
 	 * @access  public
 	 *
 	 */
-	p.addField = function(field) {
-		if ($scope.debug) {console.info($scope.dname, "addField");}
-		$scope.validation.addField(field);
-		return $scope;
+	proto.addField = function(field) {
+		if (this.debug) {console.info(this.dname, "addField");}
+		this.validation.addField(field);
+		return this;
 	};
 
 	/**
@@ -305,11 +299,11 @@
 	 * @access  public
 	 *
 	 */
-	p.removeField = function(name) {
-		if ($scope.debug) {console.info($scope.dname, "removeField");}
+	proto.removeField = function(name) {
+		if (this.debug) {console.info(this.dname, "removeField");}
 		var fieldIndex    = null;
 		var fieldToRemove = null;
-		$.each($scope.fields, function(index, value) {
+		$.each(this.fields, function(index, value) {
 			if(name == value.name) {
 				fieldToRemove = value;
 				fieldIndex    = index;
@@ -317,10 +311,10 @@
 		});
 
 		if (fieldToRemove) {
-			$scope.fields.splice(fieldIndex, 1);
-			$scope.validation.removeField(fieldToRemove);
+			this.fields.splice(fieldIndex, 1);
+			this.validation.removeField(fieldToRemove);
 		}
-		return $scope;
+		return this;
 	};
 
 	/**
@@ -333,10 +327,10 @@
 	 * @access  public
 	 *
 	 */
-	p.clickSubmitHandler = function(e) {
-		if ($scope.debug) {console.info($scope.dname, "clickSubmitHandler");}
+	proto.clickSubmitHandler = function(e) {
+		if (this.debug) {console.info(this.dname, "clickSubmitHandler");}
 		e.preventDefault();
-		$scope.$form.submit();
+		this.$form.submit();
 	};
 
 	/**
@@ -349,9 +343,9 @@
 	 * @access  public
 	 *
 	 */
-	p.submitHandler = function(e) {
-		if ($scope.debug) {console.info($scope.dname, "submitHandler");}
-		if ($scope.ajax) {
+	proto.submitHandler = function(e) {
+		if (this.debug) {console.info(this.dname, "submitHandler");}
+		if (this.ajax) {
 			e.preventDefault();
 		}
 
@@ -373,56 +367,55 @@
 	 * @access  public
 	 *
 	 */
-	p.onValidationError = function(fields, errorFields) {
-		if ($scope.debug) {console.info($scope.dname, "onValidationError");}
+	proto.onValidationError = function(fields, errorFields) {
+		if (this.debug) {console.info(this.dname, "onValidationError");}
 		var field = null;
 		for (var fieldKey = 0; fieldKey < fields.length; fieldKey++) {
 			field = fields[fieldKey];
-			$scope.handleValidationSuccessField(field);
+			this.handleValidationSuccessField(field);
 		}
 
 		var emptyField = false;
 		for (var errorFieldKey = 0; errorFieldKey < errorFields.length; errorFieldKey++) {
 			field = errorFields[errorFieldKey];
-			$scope.handleValidationErrorField(field);
+			this.handleValidationErrorField(field);
 			if (field.$el.val() == field.$el[0].defautValue || field.$el.val() == field.placeholder || field.$el.val() == field.error) {
 				emptyField = true;
 			}
 		}
 
-		if ($scope.$messages) {
-			$scope.$messages.find('.error').addClass('hide');
+		if (this.$messages) {
+			this.$messages.find('.error').addClass('hide');
 			if (emptyField) {
-				$scope.$messages.find('.error-empty').removeClass('hide');
+				this.$messages.find('.error-empty').removeClass('hide');
 			} else {
-				$scope.$messages.find('.error-validation').removeClass('hide');
+				this.$messages.find('.error-validation').removeClass('hide');
 			}
 		}
 
-		if ($scope.tracker_name) {$scope.trackingMessages.onValidationErreur();}
-		return $scope;
+		if (this.tracker_name) {this.trackingMessages.onValidationErreur();}
+		return this;
 	};
 
-	p.onValidationSuccess = function(fields) {
-		if ($scope.debug) {console.info($scope.dname, "onValidationSuccess");}
+	proto.onValidationSuccess = function(fields) {
+		if (this.debug) {console.info(this.dname, "onValidationSuccess");}
 		var field;
 		for (var fieldKey = 0; fieldKey < fields.length; fieldKey++) {
 			field = fields[fieldKey];
-			$scope.handleValidationSuccessField(field);
+			this.handleValidationSuccessField(field);
 		}
 
-		if ($scope.$messages) {
-			$scope.$messages.find('.error').addClass('hide');
-			$scope.$messages.find('.error-none').removeClass('hide');
+		if (this.$messages) {
+			this.$messages.find('.error').addClass('hide');
+			this.$messages.find('.error-none').removeClass('hide');
 		}
 
-		if ($scope.tracker_name) {$scope.trackingMessages.onValidationSuccess();}
-		console.log($scope);
-		if ($scope.ajax) {$scope.formSend(privatesMethods.reformatFormData.call($scope, $scope.$form.serializeArray()));}
-		return $scope;
+		if (this.tracker_name) {this.trackingMessages.onValidationSuccess();}
+		if (this.ajax) {this.formSend(privatesMethods.reformatFormData.call(this, this.$form.serializeArray()));}
+		return this;
 	};
 
-	p.handleValidationSuccessField = function(field) {
+	proto.handleValidationSuccessField = function(field) {
 		field.$el.removeClass('error');
 		if (field.$skin) {field.$skin.removeClass('error');}
 		if (field.$label) {field.$label.removeClass('error');}
@@ -435,8 +428,8 @@
 		}
 	};
 
-	p.handleValidationErrorField = function(field) {
-		if ($scope.debug) {console.info($scope.dname, "handleValidationErrorField", field);}
+	proto.handleValidationErrorField = function(field) {
+		if (this.debug) {console.info(this.dname, "handleValidationErrorField", field);}
 		field.$el.addClass('error');
 		if (field.$skin) {field.$skin.addClass('error');}
 		if (field.$label) {field.$label.addClass('error');}
@@ -449,64 +442,64 @@
 		}
 	};
 
-	p.formSend = function(data) {
-		if ($scope.debug) {console.info($scope.dname, "formSend");}
-		if($scope.antiSpam) {return;}
-		$scope.antiSpam = true;
+	proto.formSend = function(data) {
+		if (this.debug) {console.info(this.dname, "formSend");}
+		if(this.antiSpam) {return;}
+		this.antiSpam = true;
 
 		$.ajax({
-			method: $scope.type,
-			url: $scope.action,
+			method: this.type,
+			url: this.action,
 			data: data,
 			type: 'json',
 			dataType: 'json',
-			success: Me.help.proxy($scope.ajaxSuccess, $scope),
-			error: Me.help.proxy($scope.ajaxError, $scope)
+			success: Me.help.proxy(this.ajaxSuccess, this),
+			error: Me.help.proxy(this.ajaxError, this)
 		});
 	};
 
-	p.ajaxSuccess = function(data) {
-		if ($scope.debug) {console.info($scope.dname, "ajaxSuccess");}
-		$scope.onAllSuccess.call($scope, data);
-		$scope.onSuccess.call($scope.form_scope, data);
-		$scope.antiSpam = false;
+	proto.ajaxSuccess = function(data) {
+		if (this.debug) {console.info(this.dname, "ajaxSuccess");}
+		this.onAllSuccess.call(this, data);
+		this.onSuccess.call(this.form_scope, data);
+		this.antiSpam = false;
 		if (data.response && data.response.success == 1) {
-			if ($scope.tracker_name) {$scope.trackingMessages.onAjaxSendSuccess();}
+			if (this.tracker_name) {this.trackingMessages.onAjaxSendSuccess();}
 		}
 	};
 
-	p.onAllSuccess = function(data) {
-		if ($scope.debug) {console.info($scope.dname, "onAllSuccess");}
+	proto.onAllSuccess = function(data) {
+		if (this.debug) {console.info(this.dname, "onAllSuccess");}
 		if (data.response && data.response.success == 1) {
-			$scope.validation.reset();
+			this.validation.reset();
 		}
 	};
 
-	p.onSuccess = function(data) {
-		if ($scope.debug) {console.info($scope.dname, "onSuccess");}
+	proto.onSuccess = function(data) {
+		if (this.debug) {console.info(this.dname, "onSuccess");}
 		console.log(data);
 	};
 
-	p.ajaxError = function(error) {
-		if ($scope.debug) {console.info($scope.dname, "ajaxError");}
-		$scope.onAllError.call($scope, error);
-		$scope.onError.call($scope.form_scope, error);
-		$scope.antiSpam = false;
-		if ($scope.tracker_name) {$scope.trackingMessages.onAjaxSendError();}
+	proto.ajaxError = function(error) {
+		if (this.debug) {console.info(this.dname, "ajaxError");}
+		this.onAllError.call(this, error);
+		this.onError.call(this.form_scope, error);
+		this.antiSpam = false;
+		if (this.tracker_name) {this.trackingMessages.onAjaxSendError();}
 	};
 
-	p.onAllError = function(error) {
-		if ($scope.debug) {console.info($scope.dname, "onAllError");}
+	proto.onAllError = function(error) {
+		if (this.debug) {console.info(this.dname, "onAllError");}
 
 	};
 
-	p.onError = function(error) {
-		if ($scope.debug) {console.info($scope.dname, "onError");}
+	proto.onError = function(error) {
+		if (this.debug) {console.info(this.dname, "onError");}
 		console.log(error);
 	};
 
-	p.toString = function(){
-		return "[" + $scope.name + "]";
+	proto.toString = function(){
+		return "[" + this.name + "]";
 	};
 
 	/* Create Me reference if does'nt exist */
