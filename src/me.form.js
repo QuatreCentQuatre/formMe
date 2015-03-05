@@ -10,14 +10,14 @@
  * 	- reformatFormData
  *
  * Public Methods :
- * 	- __construct
+ *
  */
 
 (function($, window, document, undefined) {
 	"use strict";
 	/* Private Variables */
 	var instanceID   = 1;
-	var instanceName = "FormMe-";
+	var instanceName = "FormMe";
 	var defaults     = {
 		debug: false,
 		ajax: true,
@@ -77,7 +77,7 @@
 	proto.debug          = null;
 	proto.id             = null;
 	proto.name           = null;
-	proto.debug_name     = null;
+	proto.dname          = null;
 	proto.tracker_name   = null; //check: if TrackMe exist and this.$form.attr('me\\:validate\\:analytics');
 	proto.options        = null;
 
@@ -123,17 +123,17 @@
 	 */
 	proto.__construct = function($el, options) {
 		this.id    = instanceID;
-		this.name  = instanceName + String(this.id);
+		this.name  = instanceName + "-" + String(this.id);
 		this.dname = this.name + ":: ";
 		this.$form = $el;
 		this.setOptions(options);
 
 		if (!this.__validateDependencies()) {return null;}
 		if (!this.__validateOptions()) {return null;}
-
-		this.setVariables();
-		this.initForm();
 		instanceID ++;
+
+		this.__variables();
+		this.__initialize();
 		return this;
 	};
 
@@ -204,8 +204,8 @@
 	 */
 	proto.setOptions = function(options) {
 		var $scope = this;
-		var settings = Me.help.extend({}, defaults);
-		settings = Me.help.extend(settings, options);
+		var settings = $.extend({}, defaults);
+		settings = $.extend(settings, options);
 		$.each(settings, function(index, value) {
 			if ($.inArray(index, overwriteKeys) != -1) {
 				$scope[index] = value;
@@ -231,15 +231,15 @@
 
 	/**
 	 *
-	 * setVariables
+	 * __variables
 	 * it will set all basic variables from the plugins
 	 *
 	 * @return  object scope
 	 * @access  private
 	 *
 	 */
-	proto.setVariables = function() {
-		if (this.debug) {console.info(this.dname, "setVariables");}
+	proto.__variables = function() {
+		if (this.debug) {console.info(this.dname, "__variables");}
 		this.tracker_name   = (this.$form.attr('me\\:validate\\:analytics')) ? this.$form.attr('me\\:validate\\:analytics') : null;
 
 		this.$messages      = (this.$messages) ? this.$form.find(this.$messages) : (this.$form.find('.form-messages').length > 0) ? this.$form.find('.form-messages') : null;
@@ -255,22 +255,22 @@
 
 	/**
 	 *
-	 * initForm
-	 * set the basics of formMe
+	 * __initialize
+	 * set the basics
 	 *
 	 * @return  object scope
 	 * @access  private
 	 *
 	 */
-	proto.initForm = function() {
+	proto.__initialize = function() {
 		var $scope = this;
-		if (this.debug) {console.info(this.dname, "initForm");}
+		if (this.debug) {console.info(this.dname, "__initialize");}
 		if (this.skinMe_enabled) {this.skinMe = new Me.skin(this.$form);}
 		this.validation = new Me.validate(this.$form, {scope:this, debug:this.debug, onError:this.onValidationError, onSuccess:this.onValidationSuccess});
 		$.each(this.fields, function(index, field) {$scope.addField(field);});
 
-		if (this.$btn) {this.$btn.on('click.formMe', Me.help.proxy(this.clickSubmitHandler, this));}
-		this.$form.on('submit.formMe', Me.help.proxy(this.submitHandler, this));
+		if (this.$btn) {this.$btn.on('click.formMe', $.proxy(this.clickSubmitHandler, this));}
+		this.$form.on('submit.formMe', $.proxy(this.submitHandler, this));
 
 		return this;
 	};
@@ -379,8 +379,8 @@
 			data: data,
 			type: 'json',
 			dataType: 'json',
-			success: Me.help.proxy(this.ajaxSuccess, this),
-			error: Me.help.proxy(this.ajaxError, this)
+			success: $.proxy(this.ajaxSuccess, this),
+			error: $.proxy(this.ajaxError, this)
 		});
 	};
 
