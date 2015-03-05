@@ -170,7 +170,7 @@
 	 */
 	proto.__validateOptions = function() {
 		var isValid = true;
-		if (!this.$form.length > 0) {
+		if (isValid && !this.$form.length > 0) {
 			isValid = false;
 			console.warn(this.dname + "Couldn't find associated form ", this.$form);
 		}
