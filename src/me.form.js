@@ -204,8 +204,7 @@
 	 */
 	proto.setOptions = function(options) {
 		var $scope = this;
-		var settings = $.extend({}, defaults);
-		settings = $.extend(settings, options);
+		var settings = $.extend({}, defaults, options);
 		$.each(settings, function(index, value) {
 			if ($.inArray(index, overwriteKeys) != -1) {
 				$scope[index] = value;
@@ -239,7 +238,6 @@
 	 *
 	 */
 	proto.__variables = function() {
-		if (this.debug) {console.info(this.dname, "__variables");}
 		this.tracker_name   = (this.$form.attr('me\\:validate\\:analytics')) ? this.$form.attr('me\\:validate\\:analytics') : null;
 
 		this.$messages      = (this.$messages) ? this.$form.find(this.$messages) : (this.$form.find('.form-messages').length > 0) ? this.$form.find('.form-messages') : null;
@@ -264,7 +262,6 @@
 	 */
 	proto.__initialize = function() {
 		var $scope = this;
-		if (this.debug) {console.info(this.dname, "__initialize");}
 		if (this.skinMe_enabled) {this.skinMe = new Me.skin(this.$form);}
 		this.validation = new Me.validate(this.$form, {scope:this, debug:this.debug, onError:this.onValidationError, onSuccess:this.onValidationSuccess});
 		$.each(this.fields, function(index, field) {$scope.addField(field);});
