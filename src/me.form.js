@@ -19,10 +19,7 @@
 	var instanceID   = 1;
 	var instanceName = "FormMe";
 	var defaults     = {
-		debug: false,
-		ajax: true,
-		action: '',
-		skinMe: false
+		debug: false
 	};
 	var overwriteKeys = [
 		'debug',
@@ -87,7 +84,7 @@
 	proto.$btn 	         = null; //check: this.$form.find('.btn-submit');
 
 	proto.form_scope     = null;
-	proto.ajax           = null; //check: this.$form.attr('ajax');
+	proto.ajax           = true; //check: this.$form.attr('ajax');
 	proto.type           = null; //check: this.$form.attr('method');
 	proto.action         = null; //check: this.$form.attr('action');
 	proto.skinMe_enabled = null; //check: if SkinMe exist and this.$form.hasClass('skinMe');
@@ -180,6 +177,11 @@
 			console.warn(this.dname + "You need to add method to your form ", this.$form.attr('method'));
 		}
 
+		if (isValid && this.$form.attr('action') == null) {
+			isValid = false;
+			console.warn(this.dname + "You need to add action to your form ", this.$form.attr('action'));
+		}
+
 		if (isValid && this.$form.hasClass('skinMe') && (!window.Me || !Me.skin)) {
 			isValid = false;
 			console.warn(this.dname + "You need skinMe if you wanna enabled that option (https://github.com/QuatreCentQuatre/skinMe/)");
@@ -243,9 +245,9 @@
 		this.$messages      = (this.$messages) ? this.$form.find(this.$messages) : (this.$form.find('.form-messages').length > 0) ? this.$form.find('.form-messages') : null;
 		this.$btn           = (this.$btn) ? this.$form.find(this.$btn) : (this.$form.find('.btn-submit').length > 0) ? this.$form.find('.btn-submit') : null;
 
-		this.ajax           = (!this.$form.attr('ajax')) ? this.ajax : (this.$form.attr('ajax') == "true");
+		this.ajax           = (this.$form.attr('ajax')) ? (this.$form.attr('ajax') === "true") : this.ajax;
 		this.type           = this.$form.attr('method');
-		this.action         = (this.$form.attr('action')) ? this.$form.attr('action') : this.action;
+		this.action         = this.$form.attr('action');
 		this.skinMe_enabled = this.$form.hasClass('skinMe');
 
 		return this;
