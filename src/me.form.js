@@ -336,7 +336,7 @@
 
 	/**
 	 *
-	 * clickSubmitHandler
+	 * submitHandler
 	 * handle the $form submit
 	 *
 	 * @param   e event
@@ -381,6 +381,21 @@
 			success: $.proxy(this.ajaxSuccess, this),
 			error: $.proxy(this.ajaxError, this)
 		});
+	};
+
+
+	/**
+	 *
+	 * reset
+	 * this will call a reset of the validation fields
+	 *
+	 * @return  object scope
+	 * @access  public
+	 *
+	 */
+	proto.reset = function() {
+		this.validation.reset();
+		return this;
 	};
 
 	/**
@@ -550,8 +565,10 @@
 	 */
 	proto.onAllSuccess = function(data) {
 		if (this.debug) {console.info(this.dname, "onAllSuccess");}
-		if (data.response && data.response.success == 1) {
-			this.validation.reset();
+		if (data.response && data.response.success) {
+			this.reset();
+		} else if (data.success) {
+			this.reset();
 		}
 	};
 
