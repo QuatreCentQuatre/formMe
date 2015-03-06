@@ -1,4 +1,4 @@
-/*
+/**
  * FormMe from the MeLibs
  * Library that let you easily handle a full form validation
  * Dependencies :
