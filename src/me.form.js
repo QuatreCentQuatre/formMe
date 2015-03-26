@@ -318,6 +318,11 @@
 		return this;
 	};
 
+	proto.getField = function(name) {
+		if (this.debug) {console.info(this.dname, "getField");}
+		return this.validation.getField(name);
+	};
+
 	/**
 	 *
 	 * clickSubmitHandler
