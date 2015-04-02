@@ -41,29 +41,6 @@
 
 	/* Private Methods */
 	var privatesMethods = {};
-	/**
-	 *
-	 * reformatFormData
-	 * will reformat all the form data to a final object.
-	 *
-	 * @param   data     all data that need to be reformated (obj)
-	 * @return  object   reformated data
-	 * @access  private
-	 *
-	 */
-	privatesMethods.reformatFormData = function(data) {
-		var $scope    = this;
-		var finalData = {};
-		$.each(data, function(index, item) {
-			if (item.name == "postal_code") {item.value = item.value.toUpperCase();}
-			var checkIfEmpty = true;
-			if ($scope.accepted_empty && $.inArray(item.name, $scope.accepted_empty) != -1) {checkIfEmpty = false;}
-			if (checkIfEmpty && item.value == "") {return;}
-			if ($scope.disabled && $.inArray(item.name, $scope.disabled) != -1) {return;}
-			finalData[item.name] = item.value;
-		});
-		return finalData;
-	};
 
 	/* Builder Method */
 	var FormMe = function($el, options) {
@@ -107,6 +84,33 @@
 			Me.track.event('formulaire', this.tracker_name, 'envoi non réussi');
 		}
 	};
+
+    /* Utils */
+    proto.utils = {};
+
+    /**
+     *
+     * reformatFormData
+     * will reformat all the form data to a final object.
+     *
+     * @param   data     all data that need to be reformated (obj)
+     * @return  object   reformated data
+     * @access  public
+     *
+     */
+    proto.utils.reformatFormData = function(data) {
+        var $scope    = this;
+        var finalData = {};
+        $.each(data, function(index, item) {
+            if (item.name == "postal_code") {item.value = item.value.toUpperCase();}
+            var checkIfEmpty = true;
+            if ($scope.accepted_empty && $.inArray(item.name, $scope.accepted_empty) != -1) {checkIfEmpty = false;}
+            if (checkIfEmpty && item.value == "") {return;}
+            if ($scope.disabled && $.inArray(item.name, $scope.disabled) != -1) {return;}
+            finalData[item.name] = item.value;
+        });
+        return finalData;
+    };
 
 	/**
 	 *
@@ -427,7 +431,7 @@
 		}
 
 		if (this.tracker_name) {this.trackingMessages.onValidationSuccess();}
-		if (this.ajax) {this.handleAjaxSend(privatesMethods.reformatFormData.call(this, this.$form.serializeArray()));}
+		if (this.ajax) {this.handleAjaxSend(this.utils.reformatFormData.call(this, this.$form.serializeArray()));}
 		return this;
 	};
 
@@ -488,9 +492,9 @@
 		if (field.$label) {field.$label.removeClass('error');}
 		if (field.$related) {field.$related.removeClass('error');}
 		if (field.$el.parents(".dk_container").length > 0) {field.$el.parents(".dk_container").removeClass('error');}
-		if (field.errors.length > 0) {
-			$.each(field.errors, function(index, $item) {
-				$item.removeClass('error');
+		if (field.errors) {
+			$.each(field.errors, function(index, item) {
+				$(item).removeClass('error');
 			});
 		}
 	};
@@ -512,9 +516,9 @@
 		if (field.$label) {field.$label.addClass('error');}
 		if (field.$related) {field.$related.addClass('error');}
 		if (field.$el.parents(".dk_container").length > 0) {field.$el.parents(".dk_container").addClass('error');}
-		if (field.errors.length > 0) {
-			$.each(field.errors, function(index, $item) {
-				$item.addClass('error');
+		if (field.errors) {
+			$.each(field.errors, function(index, item) {
+				$(item).addClass('error');
 			});
 		}
 	};
