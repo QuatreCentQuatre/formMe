@@ -7,7 +7,7 @@
  *
  * Dependencies :
  *  - Jquery
- *  - jqueryMaskedInput
+ *  - Masked Input Plugin for jQuery
  *  - ValidateMe
  *
  * Private Methods :
