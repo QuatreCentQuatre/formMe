@@ -6,7 +6,7 @@ Library that let you easily handle a full form validation.
 
 ### Version
 
-**1.0.0**
+**1.0.1**
 
 ---
 
@@ -14,7 +14,8 @@ Library that let you easily handle a full form validation.
 
 - **jQuery-1.10 ++** (http://jquery.com/download/)
 - **Masked Input Plugin for jQuery** (https://github.com/digitalBush/jquery.maskedinput)
-- **ValidateMe** (https://github.com/QuatreCentQuatre/validateMe)
+- **validateMe** (https://github.com/QuatreCentQuatre/validateMe)
+- **trackMe** (https://github.com/QuatreCentQuatre/trackMe) - if you need auto tracking
 
 ---
 

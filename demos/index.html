@@ -7,6 +7,7 @@
     <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
 
 	<script src="https://raw.githubusercontent.com/QuatreCentQuatre/helpMe/master/src/me.help.js"></script>
+	<script src="https://raw.githubusercontent.com/QuatreCentQuatre/trackMe/master/src/me.track.js"></script>
 	<script src="https://raw.githubusercontent.com/QuatreCentQuatre/validateMe/master/src/js/me.validate.js"></script>
     <script src="https://raw.githubusercontent.com/QuatreCentQuatre/validateMe/master/src/js/me.validate-maskedinput.js"></script>
 
@@ -21,7 +22,7 @@
 			form<span>Me</span>
 		</h1>
 	</div>
-	<form class="form-account-login" method="get" action="" ajax="false"> <!-- by default ajax is true -->
+	<form class="form-account-login" method="get" action="" ajax="true" me:validate:analytics="formDemo"> <!-- by default ajax is false -->
 		<div class="inner">
 			<div class="row">
 				<p>No Placeholder</p>

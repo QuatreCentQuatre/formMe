@@ -3,12 +3,13 @@
  * Library that let you easily handle a full form validation
  *
  * Version :
- *  - 1.0.0
+ *  - 1.0.1
  *
  * Dependencies :
  *  - Jquery
  *  - Masked Input Plugin for jQuery
- *  - ValidateMe
+ *  - validateMe
+ *  - trackMe - if you need auto tracking
  *
  * Private Methods :
  * 	- reformatFormData
@@ -75,7 +76,7 @@
 	proto.id             = null;
 	proto.name           = null;
 	proto.dname          = null;
-	proto.tracker_name   = null; //check: if TrackMe exist and this.$form.attr('me\\:validate\\:analytics');
+	proto.tracker_name   = null; //check: if TrackMe exist and this.$form.attr('me:validate:analytics');
 	proto.options        = null;
 
 	/* Publics Variables */
@@ -84,7 +85,7 @@
 	proto.$btn 	         = null; //check: this.$form.find('.btn-submit');
 
 	proto.form_scope     = null;
-	proto.ajax           = true; //check: this.$form.attr('ajax');
+	proto.ajax           = false; //check: this.$form.attr('ajax');
 	proto.type           = null; //check: this.$form.attr('method');
 	proto.action         = null; //check: this.$form.attr('action');
 	proto.skinMe_enabled = null; //check: if SkinMe exist and this.$form.hasClass('skinMe');
@@ -94,7 +95,7 @@
 	proto.accepted_empty = null;
 
 	proto.trackingMessages = {
-		onValidationErreur: function() {
+		onValidationError: function() {
 			Me.track.event('formulaire', this.tracker_name, 'validation non réussite');
 		},
 		onValidationSuccess: function() {
@@ -267,7 +268,7 @@
 	 *
 	 */
 	proto.__variables = function() {
-		this.tracker_name   = (this.$form.attr('me\\:validate\\:analytics')) ? this.$form.attr('me\\:validate\\:analytics') : null;
+		this.tracker_name   = (this.$form.attr('me:validate:analytics')) ? this.$form.attr('me:validate:analytics') : null;
 
 		this.$messages      = (this.$messages) ? this.$form.find(this.$messages) : (this.$form.find('.form-messages').length > 0) ? this.$form.find('.form-messages') : null;
 		this.$btn           = (this.$btn) ? this.$form.find(this.$btn) : (this.$form.find('.btn-submit').length > 0) ? this.$form.find('.btn-submit') : null;
@@ -453,7 +454,7 @@
 			this.$messages.find('.error-none').removeClass('hide');
 		}
 
-		if (this.tracker_name) {this.trackingMessages.onValidationSuccess();}
+		if (this.tracker_name) {this.trackingMessages.onValidationSuccess.call(this);}
 		if (this.ajax) {this.handleAjaxSend(this.utils.reformatFormData.call(this, this.$form.serializeArray()));}
 		return this;
 	};
@@ -495,7 +496,7 @@
 			}
 		}
 
-		if (this.tracker_name) {this.trackingMessages.onValidationErreur();}
+		if (this.tracker_name) {this.trackingMessages.onValidationError.call(this);}
 		return this;
 	};
 
@@ -562,7 +563,7 @@
 		this.onSuccess.call(this, this.form_scope, data);
 		this.antiSpam = false;
 		if (data.response && data.response.success == 1) {
-			if (this.tracker_name) {this.trackingMessages.onAjaxSendSuccess();}
+			if (this.tracker_name) {this.trackingMessages.onAjaxSendSuccess.call(this);}
 		}
 	};
 
@@ -581,7 +582,7 @@
 		this.onAllError.call(this, error);
 		this.onError.call(this, this.form_scope, error);
 		this.antiSpam = false;
-		if (this.tracker_name) {this.trackingMessages.onAjaxSendError();}
+		if (this.tracker_name) {this.trackingMessages.onAjaxSendError.call(this);}
 	};
 
 	/**
