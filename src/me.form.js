@@ -1,6 +1,10 @@
 /**
  * FormMe from the MeLibs
  * Library that let you easily handle a full form validation
+ *
+ * Version :
+ *  - 1.0.0
+ *
  * Dependencies :
  *  - Jquery
  *  - jqueryMaskedInput
@@ -10,7 +14,26 @@
  * 	- reformatFormData
  *
  * Public Methods :
- *
+ *  - setOptions
+ *  - getOptions
+ *  - addField
+ *  - removeField
+ *  - getField
+ *  - clickSubmitHandler
+ *  - submitHandler
+ *  - handleAjaxSend
+ *  - reset
+ *  - onValidationSuccess
+ *  - onValidationError
+ *  - handleValidationSuccessField
+ *  - handleValidationErrorField
+ *  - ajaxSuccess
+ *  - ajaxError
+ *  - onAllSuccess
+ *  - onAllError
+ *  - onSuccess
+ *  - onError
+ *  - toString
  */
 
 (function($, window, document, undefined) {
