@@ -294,6 +294,10 @@
 		var $scope = this;
 		if (this.skinMe_enabled) {this.skinMe = new Me.skin(this.$form);}
 		this.validation = new Me.validate(this.$form, {scope:this, debug:this.debug, onError:this.onValidationError, onSuccess:this.onValidationSuccess});
+        if(!this.fields){
+            console.warn('Could not find fields attribute. Make sure your fields are listed when initializing form.me');
+            return;
+        }
 		$.each(this.fields, function(index, field) {$scope.addField(field);});
 
 		if (this.$btn) {this.$btn.on('click.formMe', $.proxy(this.clickSubmitHandler, this));}
