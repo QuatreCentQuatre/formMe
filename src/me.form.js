@@ -3,7 +3,7 @@
  * Library that let you easily handle a full form validation
  *
  * Version :
- *  - 1.0.1
+ *  - 1.0.2
  *
  * Dependencies :
  *  - Jquery
@@ -318,6 +318,15 @@
 	 */
 	proto.addField = function(field) {
 		if (this.debug) {console.info(this.dname, "addField");}
+
+		if (this.fields.indexOf(field) === -1) {
+            this.fields.push(field);
+        }
+
+		if (this.skinMe_enabled) {
+		    this.skinMe.addField(field);
+        }
+
 		this.validation.addField(field);
 		return this;
 	};

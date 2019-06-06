@@ -6,7 +6,7 @@ Library that let you easily handle a full form validation.
 
 ### Version
 
-**1.0.1**
+**1.0.2**
 
 ---
 
