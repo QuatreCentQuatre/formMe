@@ -1,5 +1,10 @@
 {
   "name": "form-me",
-  "version": "1.0.2",
-  "author": "QuatreCentQuatre team <info@quatrecentquatre.com> (https://www.quatrecentquatre.com/)"
+  "version": "1.0.3",
+  "author": "QuatreCentQuatre team <info@quatrecentquatre.com> (https://www.quatrecentquatre.com/)",
+  "dependencies": {
+    "jquery": "^3.2.1",
+    "validate-me": "git+https://github.com/QuatreCentQuatre/validateMe.git#2.0.2",
+    "track-me": "git+https://github.com/QuatreCentQuatre/trackMe.git#1.0.3"
+  }
 }
