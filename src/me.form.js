@@ -53,6 +53,7 @@
 		'fields',
 		'disabled',
 		'accepted_empty',
+		'submitHandler',
 		'onValidationError',
 		'onValidationSuccess',
 		'handleValidationErrorField',
