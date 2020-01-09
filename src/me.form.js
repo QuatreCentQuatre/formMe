@@ -54,6 +54,7 @@
 		'disabled',
 		'accepted_empty',
 		'submitHandler',
+		'handleAjaxSend',
 		'onValidationError',
 		'onValidationSuccess',
 		'handleValidationErrorField',
@@ -124,17 +125,38 @@
      *
      */
     proto.utils.reformatFormData = function(data) {
-        var $scope    = this;
-        var finalData = {};
-        $.each(data, function(index, item) {
-            if (item.name == "postal_code") {item.value = item.value.toUpperCase();}
+        var $scope = this;
+        var finalFormData = new FormData();
+
+        $.each(data, function (index, item) {
+            if (item.name == "postal_code") {
+                item.value = item.value.toUpperCase();
+            }
             var checkIfEmpty = true;
-            if ($scope.accepted_empty && $.inArray(item.name, $scope.accepted_empty) != -1) {checkIfEmpty = false;}
-            if (checkIfEmpty && item.value == "") {return;}
-            if ($scope.disabled && $.inArray(item.name, $scope.disabled) != -1) {return;}
-            finalData[item.name] = item.value;
+            if ($scope.accepted_empty && $.inArray(item.name, $scope.accepted_empty) != -1) {
+                checkIfEmpty = false;
+            }
+            if (checkIfEmpty && item.value == "") {
+                return;
+            }
+            if ($scope.disabled && $.inArray(item.name, $scope.disabled) != -1) {
+                return;
+            }
+
+            finalFormData.append(item.name, item.value);
         });
-        return finalData;
+
+        $.each(this.fields, function (index, item) {
+            if (item.filetype != undefined) {
+                $scope.hasUploadField = true;
+                var $element = $('input[name="' + item.name + '"]');
+                if ($element[0].files[0]) {
+                    finalFormData.append(item.name, $element[0].files[0]);
+                }
+            }
+        });
+
+        return finalFormData;
     };
 
 	/**
@@ -420,13 +442,15 @@
 		this.antiSpam = true;
 
 		$.ajax({
-			method: this.type,
-			url: this.action,
-			data: data,
-			type: 'json',
-			dataType: 'json',
-			success: $.proxy(this.ajaxSuccess, this),
-			error: $.proxy(this.ajaxError, this)
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: this.type,
+            url: this.action,
+            data: data,
+            dataType: 'json',
+            success: $.proxy(this.ajaxSuccess, this),
+            error: $.proxy(this.ajaxError, this)
 		});
 	};
 
