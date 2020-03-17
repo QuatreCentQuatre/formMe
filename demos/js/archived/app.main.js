@@ -1,4 +1,21 @@
 $(document).ready(function() {
+	// let form = new Formulaire({
+	// 	formID: 'formES',
+	// 	dataType: 'json',
+	// 	fields: [
+	// 		{name:'name', required: false},
+	// 		{name:'last', required: false}
+	// 	]
+	// });
+
+	// let formES = new FormMe({
+	// 	formID: 'formES',
+	// 	dataType: 'json',
+	// 	fields: [
+	// 		{name:'name', required: false}
+	// 	]
+	// });
+
 	var formAccount = new Me.form($('.form-account-login'), {
 		form_scope: this,
 		fields:[
