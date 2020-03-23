@@ -87,6 +87,7 @@ class FormBase{
 	}
 
 	onValidationSuccess(fields){
+		console.log('SUCCESS')
 		fields.forEach((field, index) => {
 			this.handleValidationSuccessField(field);
 		});
@@ -188,6 +189,13 @@ class FormBase{
 
 			if(item.value === "" || field.disabled){return;}
 			formattedData[item.name] = item.value;
+
+            if (item.filetype != undefined) {
+
+                if (field[0].files[0]) {
+                    formattedData.append(item.name, field[0].files[0]);
+                }
+            }
 		});
 
 		return formattedData;

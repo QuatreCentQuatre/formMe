@@ -9,7 +9,7 @@ class Form extends FormBase{
 			{name:'no-value'},
 			{name:'checkbox'},
 			{name:'select-1'},
-			{name:'file', required: false, filetypes: ['.png', '.jpg']}
+			{name:'file', file_size: 2000, file_type: ['.jpg']}
 		];
 	}
 }
