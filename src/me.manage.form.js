@@ -41,13 +41,13 @@ class FormBase{
 	}
 
 	addEvents(){
-		if (this.$submit) {this.$submit.on(`click.formMe`, (e)=>{this.clickSubmitHandler(e)});}
+		if (this.$submit) {this.$submit.on('click.formMe', (e)=>{this.clickSubmitHandler(e)});}
 		this.$el.on('submit.formMe', (e)=>{this.submitHandler(e)});
 	}
 
 	removeEvents(){
-		if (this.$submit) {this.$submit.off(`click.formMe`);}
-		this.$el.off(`submit.formMe`);
+		if (this.$submit) {this.$submit.off('click.formMe');}
+		this.$el.off('submit.formMe');
 	}
 
 	addField(field){
@@ -101,6 +101,7 @@ class FormBase{
 	onValidationError(fields, errorFields){
 		console.log(fields, errorFields);
 		fields.forEach((field, index) => {
+
 			this.handleValidationSuccessField(field);
 		});
 
@@ -112,6 +113,10 @@ class FormBase{
 	}
 
 	handleValidationSuccessField(field) {
+        //hide previously visible errors from a past validation
+        if(field.error){
+            field.error.addClass('hide').attr('aria-hidden', true);
+        }
 		field.$el.removeClass(this.classes.error);
 		// if (field.$skin) {field.$skin.removeClass('error');}
 		// if (field.$label) {field.$label.removeClass('error');}
@@ -125,6 +130,10 @@ class FormBase{
 	};
 
 	handleValidationErrorField(field) {
+
+        if(field.error){
+            field.error.removeClass('hide').attr('aria-hidden', false);
+        }
 		field.$el.addClass(this.classes.error);
 		// if (field.$skin) {field.$skin.addClass('error');}
 		// if (field.$label) {field.$label.addClass('error');}
@@ -175,7 +184,7 @@ class FormBase{
 		let formattedData = {};
 
 		data.forEach(function(item, index) {
-			let field = $(`[name="${item.name}"]`);
+			let field = $('[name="${item.name}"]');
 
 			if(item.value === "" || field.disabled){return;}
 			formattedData[item.name] = item.value;

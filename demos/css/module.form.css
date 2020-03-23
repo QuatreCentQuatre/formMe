@@ -1,6 +1,9 @@
 .hidden {
   display: none;
   visibility: hidden;
+}.hide {
+  display: none;
+  visibility: hidden;
 }
 body #content-ctn {
   width: 100%;

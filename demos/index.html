@@ -2,7 +2,7 @@
 <head>
     <link rel="stylesheet" type="text/css" href="css/app.reset.css">
     <link rel="stylesheet" type="text/css" href="css/module.form.css">
-    <style>.error{color:red;}</style>
+    <style>.has-error{color:red; border:1px solid red;}</style>
 </head>
 <body>
 <div id="content-ctn">
@@ -12,12 +12,14 @@
 		</h1>
 	</div>
 
-	<form method="post" action="test.php" ajax="true" id="formES" me:form="Formulaire">
+	<h2>A typical form.</h2>
+
+	<form method="post" action="test.php" ajax="true" id="formES" me:form="Form">
 		<div>
 			<input type="text" name="name" id="name" placeholder="name">
 		</div>
 		<div>
-			<input type="text" name="last" id="last" placeholder="last">
+			<input type="text" name="lastname" id="lastname" placeholder="last name">
 		</div>
 		<div>
 			<input type="text" name="copy-name" id="copy-name" placeholder="copy-name">
@@ -44,6 +46,35 @@
 
 		<input type="submit">
 	</form>
+
+	<h2>An accessible form with error message read by screen readers.</h2>
+
+	<form method="post" action="test.php" ajax="true" id="formESAccessible" me:form="FormAccessible">
+		<div>
+			<input type="text" name="name" id="name-accessible" placeholder="name">
+			<p class="error-message hide" id="name-error-message" aria-hidden="true" role="alert" aria-atomic="true">Please enter a name!</p>
+		</div>
+		<div>
+			<input type="text" name="lastname" id="lastname-accessible" placeholder="last name">
+			<p class="error-message hide" id="last-error-message" aria-hidden="true" role="alert" aria-atomic="true">Please enter a last name!</p>
+		</div>
+		<input type="submit">
+	</form>
+
+	<h2>An accessible form with error message read by screen readers. Differents error messages for differents error types</h2>
+
+	<form method="post" action="test.php" ajax="true" id="formESAccessibleExtra" me:form="FormAccessibleExtra">
+		<div>
+			<input type="text" name="name" id="name-accessible-extra" placeholder="name">
+			<p class="error-message hide" data-error-code="empty"  aria-hidden="true" role="alert" aria-atomic="true">Please enter a name!</p>
+		</div>
+		<div>
+			<input type="text" name="email" id="email" placeholder="email">
+			<p class="error-message hide" data-error-code="empty" aria-hidden="true" role="alert" aria-atomic="true">Please enter an email!</p>
+			<p class="error-message hide" data-error-code="regex" aria-hidden="true" role="alert" aria-atomic="true">Please enter a valid email!</p>
+		</div>
+		<input type="submit">
+	</form>
 </div>
 <script src="../node_modules/jquery/dist/jquery.js"></script>
 <script src="../node_modules/track-me/src/me.track.js"></script>
@@ -56,5 +87,7 @@
 <script src="../src/me.manage.form.js"></script>
 
 <script src="js/me.form.view.js"></script>
+<script src="js/me.form.accessible.view.js"></script>
+<script src="js/me.form.accessible.extra.view.js"></script>
 </body>
 </html>

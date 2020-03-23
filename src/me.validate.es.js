@@ -209,10 +209,13 @@ class ValidateMe {
 
 				return isValid;
 			},
-			text: (field) => {},
+			text: (field) => {
+                let isValid = true;
+                return isValid;
+			},
 			select: (field) => {
 				let isValid = true;
-				if (field.required && !field.default_ok && field.value === field.defaultValue.val()) {isValid = false; field.error_code = 'default_ok';}
+				if (field.required && !field.default_ok && field.value === field.defaultValue.val()) {isValid = false; field.error_code = 'default_ok'; console.log('invalid')}
 				return isValid;
 			},
 			checkbox: (field) => {
