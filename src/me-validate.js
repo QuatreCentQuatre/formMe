@@ -19,14 +19,14 @@ class ValidateMe {
             field.type = (tag === "input") ? field.$el.prop("type").toLowerCase() : tag;
 
             if(field.type === 'select'){
-                field.defaultValue = field.$el.find('[default]');
+                field.defaultValue = (field.$el.find('[default]').length > 0) ? field.$el.find('[default]') : field.$el.find('option').eq(0);
             }
         }
+
 
         field.$copy = (field.copy) ? this.form.$el.find('[name="' + field.copy + '"]') : null;
         field.regex = (!!field.regex) ? field.regex : (!!this.customFieldType[field.type]) ? this.customFieldType[field.type].regex : null;
 
-        this.addFieldEvents(field);
         this.fields.push(field);
     }
 
@@ -34,7 +34,6 @@ class ValidateMe {
         let field = this.getField(name);
 
         if(field){
-            this.removeFieldEvents(field);
             this.fields.splice(this.fields.indexOf(field), 1);
         }
     }
@@ -45,28 +44,19 @@ class ValidateMe {
         })
     }
 
-    addFieldEvents(field){
-        field.$el.on('focus.'  + field.name, (e)=>{this.focusHandler(e, field)});
-        field.$el.on('blur.'  + field.name, (e)=>{this.blurHandler(e, field)});
-        field.$el.on('change.'  + field.name, (e)=>{this.modificationHandler(e, field)});
-    }
-
-    removeFieldEvents(field){
-        field.$el.off('focus.'  + field.name);
-        field.$el.off('blur.'  + field.name);
-        field.$el.off('change.'  + field.name);
-    }
-
     validate(){
         this.invalidFields = [];
 
         for (let field of this.fields) {
-            field.value = (field.type === 'file') ? field.$el[0].files : field.$el.val();
+            let fieldValid = (!!this.validations.default(field));
 
-            let fieldValid = !!this.validations.default(field);
             if(fieldValid){
                 if(!!this.validations[field.type]){
                     fieldValid = !!this.validations[field.type](field);
+
+                    if(fieldValid && !!field.validation){
+                        fieldValid = !!field.validation(field);
+                    }
                 }
             }
 
@@ -74,27 +64,16 @@ class ValidateMe {
                 this.invalidFields.push(field);
             }
         }
-        console.log(this.hasError);
 
         if(this.hasError){
             this.form.onValidationError(this.fields, this.invalidFields);
         } else{
-            this.form.onValidationSuccess(this.fields);
+            if(!!this.form.$el.attr('ajax')){
+                this.form.onValidationSuccess(this.fields);
+            }
         }
 
-        return this.hasError;
-    }
-
-    focusHandler(e, field){
-
-    }
-
-    blurHandler(e, field){
-
-    }
-
-    modificationHandler(e, field){
-
+        return !this.hasError;
     }
 
     isValidOptions(field){
@@ -122,11 +101,6 @@ class ValidateMe {
             console.error(`Couldn't find field that need to have the same value with associated name :: ${field.name}`);
         }
 
-        if (field.mask && typeof field.mask !== 'string') {
-            isValid = false;
-            console.error(`Mask must for the ${field.name} field must be a String`);
-        }
-
         if (field.regex && !(field.regex instanceof RegExp)) {
             isValid = false;
             console.error(`RegExp on ${field.name} field is not valid.`);
@@ -142,7 +116,26 @@ class ValidateMe {
             console.error(`Placeholder must be String.`);
         }
 
+        if (field.validation && typeof field.validation !== "function") {
+            isValid = false;
+            console.error(`Validation must be function.`);
+        }
+
         return isValid;
+    }
+
+    reset(){
+        $.each(this.fields, function(index, field) {
+            if (field.type === 'checkbox' || field.type === 'radio') {
+                field.$el.attr('checked', false);
+            } else if (field.type === 'select'){
+                field.$el.val(field.defaultValue.val());
+            } else {
+                field.$el.val('');
+            }
+
+            field.$el.trigger('change');
+        });
     }
 
     set form(scope){
@@ -171,6 +164,7 @@ class ValidateMe {
             copy	    	: null,  // String: Name of the field element who should have the same value.
             regex			: null,  // Regular Expression
             placeholder		: null,	 // String
+            validation		: null,	 // Functions
 
             //Select options
             default_ok		: false,	 // Bool, if the default option of the select can be a valid option to submit
@@ -199,14 +193,14 @@ class ValidateMe {
         return {
             default: (field) => {
                 let isValid = true;
-                let needToValid = (!!field.required || (!field.required && (!!field.value || !!field.$copy)));
+                let needToValid = (!!field.required || (!field.required && (!!field.$el.val() || (!!field.$copy && field.$copy.val().length > 1))));
 
                 field.error_code = null;
 
                 if (needToValid) {
-                    if(isValid && !field.value) {isValid = false; field.error_code = 'empty';} // validate empty
-                    if(isValid && !!field.$copy && field.$copy.val() !== field.value) {isValid = false; field.error_code = 'copy';} // validate copy
-                    if(isValid && !!field.regex && !field.regex.test(field.value)) {isValid = false; field.error_code = 'regex'}
+                    if(isValid && !field.$el.val()) {isValid = false; field.error_code = 'empty';} // validate empty
+                    if(isValid && !!field.$copy && field.$copy.val() !== field.$el.val()) {isValid = false; field.error_code = 'copy';} // validate copy
+                    if(isValid && !!field.regex && !field.regex.test(field.$el.val())) {isValid = false; field.error_code = 'regex'}
                 }
 
                 return isValid;
@@ -217,7 +211,7 @@ class ValidateMe {
             },
             select: (field) => {
                 let isValid = true;
-                if (field.required && !field.default_ok && field.value === field.defaultValue.val()) {isValid = false; field.error_code = 'default_ok';}
+                if (field.required && !field.default_ok && field.$el.val() === field.defaultValue.val()) {isValid = false; field.error_code = 'default_ok';}
                 return isValid;
             },
             checkbox: (field) => {
@@ -232,20 +226,21 @@ class ValidateMe {
             },
             file: (field) => {
                 let isValid = true;
-                let inFileTypesArray = false;
+                let inFileTypesArray = true;
                 let regexpFiletypes = /(?:\.([^.]+))?$/;
 
-                if(field.required && field.value.length == 0){
+                if(field.required && field.$el[0].files.length == 0){
                     isValid = false;
                     field.error_code = 'empty';
                     return isValid;
                 }
 
-                for (let type in field.file_type) {
-                    let filetype = regexpFiletypes.exec(field.$el.val());
-
-                    if (field.file_type[type] == filetype[0]) {
-                        inFileTypesArray = true;
+                for(let file of field.$el[0].files){
+                    for (let type in field.file_type) {
+                        let filetype = regexpFiletypes.exec(file.name);
+                        if (field.file_type[type] != filetype[0]) {
+                            inFileTypesArray = false;
+                        }
                     }
                 }
 
@@ -256,7 +251,7 @@ class ValidateMe {
                 }
 
                 if(field.file_size){
-                    for(let file of field.value){
+                    for(let file of field.$el[0].files){
 
 						//bytes to kilobytes for simplicity...
                         if(file.size/1000 > field.file_size){
@@ -276,3 +271,6 @@ class ValidateMe {
         return this.invalidFields.length > 0;
     }
 }
+
+if(!window.Me){window.Me = {};}
+Me.validate = ValidateMe;

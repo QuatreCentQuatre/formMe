@@ -28,11 +28,8 @@ class FormBase{
 		if(!this.dependenciesExist() || !this.requirementsExit())
 			return;
 
-		// this.validation = new Me.validate(this.$el, {scope: this, onError: this.onValidationError, onSuccess: this.onValidationSuccess});
-		this.esValidation = new ValidateMe(this);
+		this.validation = new ValidateMe(this);
 
-
-		// Need to pass all fields directly into Me.validate instance
 		this.fields.forEach((field, index) => {
 			this.addField(field);
 		});
@@ -41,7 +38,7 @@ class FormBase{
 	}
 
 	addEvents(){
-		if (this.$submit) {this.$submit.on('click.formMe', (e)=>{this.clickSubmitHandler(e)});}
+		if (this.$submit) {this.$submit.on('click.formMe', (e)=>{this.submitHandler(e)});}
 		this.$el.on('submit.formMe', (e)=>{this.submitHandler(e)});
 	}
 
@@ -56,8 +53,7 @@ class FormBase{
 		}
 
 		//Need to add validation in addField of validation to ensure that the field doesnt exist in validation
-		// this.validation.addField(field);
-		this.esValidation.addField(field);
+		this.validation.addField(field);
 	}
 
 	removeField(name) {
@@ -65,8 +61,7 @@ class FormBase{
 
 		if(field){
 			this.fields.splice(index, 1);
-			this.esValidation.removeField(field);
-			// this.validation.removeField(field);
+			this.validation.removeField(field);
 		}
 	};
 
@@ -76,18 +71,15 @@ class FormBase{
 		})
 	};
 
-	clickSubmitHandler(e){
-		e.preventDefault();
-		this.submitHandler();
-	}
-
 	submitHandler(e){
 		if (this.ajax && e) {e.preventDefault();}
-		this.esValidation.validate();
+
+		if(!this.validation.validate()){
+			e.preventDefault();
+		}
 	}
 
 	onValidationSuccess(fields){
-		console.log('SUCCESS')
 		fields.forEach((field, index) => {
 			this.handleValidationSuccessField(field);
 		});
@@ -100,9 +92,7 @@ class FormBase{
 	}
 
 	onValidationError(fields, errorFields){
-		console.log(fields, errorFields);
 		fields.forEach((field, index) => {
-
 			this.handleValidationSuccessField(field);
 		});
 
@@ -119,32 +109,13 @@ class FormBase{
             field.error.addClass('hide').attr('aria-hidden', true);
         }
 		field.$el.removeClass(this.classes.error);
-		// if (field.$skin) {field.$skin.removeClass('error');}
-		// if (field.$label) {field.$label.removeClass('error');}
-		// if (field.$related) {field.$related.removeClass('error');}
-		// if (field.$el.parents(".dk_container").length > 0) {field.$el.parents(".dk_container").removeClass('error');}
-		// if (field.errors) {
-		// 	$.each(field.errors, function(index, item) {
-		// 		$(item).removeClass('error');
-		// 	});
-		// }
 	};
 
 	handleValidationErrorField(field) {
-
         if(field.error){
             field.error.removeClass('hide').attr('aria-hidden', false);
         }
 		field.$el.addClass(this.classes.error);
-		// if (field.$skin) {field.$skin.addClass('error');}
-		// if (field.$label) {field.$label.addClass('error');}
-		// if (field.$related) {field.$related.addClass('error');}
-		// if (field.$el.parents(".dk_container").length > 0) {field.$el.parents(".dk_container").addClass('error');}
-		// if (field.errors) {
-		// 	$.each(field.errors, function(index, item) {
-		// 		$(item).addClass('error');
-		// 	});
-		// }
 	};
 
 	handleAjaxSend(formData){
@@ -163,21 +134,15 @@ class FormBase{
 
 	ajaxSuccess(data){
 		this.antiSpam = false;
-		this.onSuccess(data);
-	}
 
-	ajaxError(error){
-		this.antiSpam = false;
-		this.onError(error);
-	}
-
-	onSuccess(data){
 		if(this.dataType === 'json' && Object.entries(data).length === 0){console.warn('No values returned by the service.')}
 		this.reset();
 
 		this.$el.removeClass(this.classes.serverError).addClass(this.classes.serverSuccess);
 	}
-	onError(error){
+
+	ajaxError(error){
+		this.antiSpam = false;
 		this.$el.removeClass(this.classes.serverSuccess).addClass(this.classes.serverError);
 	}
 
@@ -244,17 +209,11 @@ class FormBase{
 			console.error(`${this.name} needs to have a submit button`);
 		}
 
-		// if (isValid && this.$el.attr('me:validate:analytics') && (!window.Me || !Me.track)) {
-		// 	isValid = false;
-		// 	console.warn(this.dname + "if you want autotracking enabled you need trackMe (https://github.com/QuatreCentQuatre/trackMe/)");
-		// }
-
 		return isValid;
 	}
 
 	reset() {
-		// this.validation.reset();
-		this.esValidation.reset();
+		this.validation.reset();
 		return this;
 	};
 

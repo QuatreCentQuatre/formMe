@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "jquery": "^3.2.1",
-    "validate-me": "git+https://github.com/QuatreCentQuatre/validateMe.git#2.0.2",
-    "track-me": "git+https://github.com/QuatreCentQuatre/trackMe.git#1.0.3"
+    "validate-me": "git+https://github.com/QuatreCentQuatre/validateMe.git#2.0.2"
   }
 }
