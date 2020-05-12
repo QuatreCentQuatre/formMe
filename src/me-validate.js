@@ -8,7 +8,7 @@ class ValidateMe {
         let field = $.extend({}, this.baseFieldAttr, options);
         field.$el = this.form.$el.find('[name="'+field.name+'"]');
 
-        if(!this.isValidOptions(field))
+        if(!this.isValidOptions(field) || !!this.getField(field.name))
             return;
 
         field.id          = field.$el.attr('id') || null;
@@ -76,6 +76,8 @@ class ValidateMe {
         return !this.hasError;
     }
 
+    // @TODO Add option to change option via function.
+    
     isValidOptions(field){
         let isValid = true;
 
