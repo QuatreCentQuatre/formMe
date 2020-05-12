@@ -155,7 +155,7 @@ class FormBase{
 		let formattedData = {};
 		
 		data.forEach(function(item, index) {
-			let field = $('[name="${item.name}"]');
+			let field = $(`[name="${item.name}"]`);
 			
 			if(item.value === "" || field.disabled){return;}
 			formattedData[item.name] = item.value;
