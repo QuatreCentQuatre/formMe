@@ -8,7 +8,7 @@ class Form extends FormBase{
 			{name:'copy-name', copy:'name', required: false},
 			{name:'no-value', required: false},
 			{name:'checkbox', required: false},
-			{name:'file', file_size: 2000, file_type: ['.jpg'], required: false},
+			{name:'file', file_size: 2000, file_type: ['.png']},
 			{name:'select-1'},
 		];
 	}

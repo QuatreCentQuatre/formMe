@@ -132,6 +132,7 @@ class FormBase{
 			url: this.action,
 			data: formData,
 			dataType: this.dataType,
+			processData: false,
 			success: (successObj) => {this.ajaxSuccess(successObj)},
 			error: (errorObj) => {this.ajaxError(errorObj)}
 		});
@@ -159,11 +160,21 @@ class FormBase{
 			
 			if(item.value === "" || field.disabled){return;}
 			formattedData[item.name] = item.value;
-			
-			if (item.filetype != undefined) {
-				
+		});
+		
+		
+		//@note serializeArray does not serialize file select elements.
+		this.fields.forEach(function (item, index) {
+			if (item.file_type != undefined) {
+				let field = $(`[name="${item.name}"]`);
 				if (field[0].files[0]) {
-					formattedData.append(item.name, field[0].files[0]);
+					formattedData[item.name] = [];
+					
+					for (const prop in field[0].files){
+						if(field[0].files[prop].name && field[0].files[prop].size){
+							formattedData[item.name].push(field[0].files[prop]);
+						}
+					}
 				}
 			}
 		});
