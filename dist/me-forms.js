@@ -334,6 +334,8 @@ var FormBase = /*#__PURE__*/function () {
         data: formData,
         dataType: this.dataType,
         processData: false,
+        cache: false,
+        contentType: false,
         success: function success(successObj) {
           _this5.ajaxSuccess(successObj);
         },
@@ -363,7 +365,7 @@ var FormBase = /*#__PURE__*/function () {
   }, {
     key: "formatFormData",
     value: function formatFormData(data) {
-      var formattedData = {};
+      var formattedData = new FormData();
       data.forEach(function (item, index) {
         var field = $("[name=\"".concat(item.name, "\"]"));
 
@@ -371,7 +373,7 @@ var FormBase = /*#__PURE__*/function () {
           return;
         }
 
-        formattedData[item.name] = item.value;
+        formattedData.append(item.name, item.value);
       }); //@note serializeArray does not serialize file select elements.
 
       this.fields.forEach(function (item, index) {
@@ -379,13 +381,15 @@ var FormBase = /*#__PURE__*/function () {
           var field = $("[name=\"".concat(item.name, "\"]"));
 
           if (field[0].files[0]) {
-            formattedData[item.name] = [];
+            var filesArr = [];
 
             for (var prop in field[0].files) {
               if (field[0].files[prop].name && field[0].files[prop].size) {
-                formattedData[item.name].push(field[0].files[prop]);
+                filesArr.push(field[0].files[prop]);
               }
             }
+
+            formattedData.append(item.name, filesArr);
           }
         }
       });

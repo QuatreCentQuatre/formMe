@@ -133,6 +133,8 @@ class FormBase{
 			data: formData,
 			dataType: this.dataType,
 			processData: false,
+			cache: false,
+			contentType: false,
 			success: (successObj) => {this.ajaxSuccess(successObj)},
 			error: (errorObj) => {this.ajaxError(errorObj)}
 		});
@@ -153,28 +155,29 @@ class FormBase{
 	}
 	
 	formatFormData(data) {
-		let formattedData = {};
+		let formattedData = new FormData();
 		
 		data.forEach(function(item, index) {
 			let field = $(`[name="${item.name}"]`);
 			
 			if(item.value === "" || field.disabled){return;}
-			formattedData[item.name] = item.value;
+			formattedData.append(item.name, item.value);
 		});
-		
 		
 		//@note serializeArray does not serialize file select elements.
 		this.fields.forEach(function (item, index) {
 			if (item.file_type != undefined) {
 				let field = $(`[name="${item.name}"]`);
 				if (field[0].files[0]) {
-					formattedData[item.name] = [];
+					let filesArr = [];
 					
 					for (const prop in field[0].files){
 						if(field[0].files[prop].name && field[0].files[prop].size){
-							formattedData[item.name].push(field[0].files[prop]);
+							filesArr.push(field[0].files[prop]);
 						}
 					}
+					
+					formattedData.append(item.name, filesArr);
 				}
 			}
 		});
