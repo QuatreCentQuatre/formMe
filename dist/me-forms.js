@@ -264,6 +264,12 @@ var FormBase = /*#__PURE__*/function () {
   }, {
     key: "submitHandler",
     value: function submitHandler(e) {
+      if (this.antiSpam) {
+        return;
+      }
+
+      this.antiSpam = true;
+
       if (this.ajax && e) {
         e.preventDefault();
       }
@@ -298,6 +304,7 @@ var FormBase = /*#__PURE__*/function () {
         _this4.handleValidationErrorField(field);
       });
       this.$el.addClass(this.classes.invalid);
+      this.antiSpam = false;
     }
   }, {
     key: "handleValidationSuccessField",
@@ -323,11 +330,6 @@ var FormBase = /*#__PURE__*/function () {
     value: function handleAjaxSend(formData) {
       var _this5 = this;
 
-      if (this.antiSpam) {
-        return;
-      }
-
-      this.antiSpam = true;
       $.ajax({
         method: this.method,
         url: this.action,
@@ -341,14 +343,15 @@ var FormBase = /*#__PURE__*/function () {
         },
         error: function error(errorObj) {
           _this5.ajaxError(errorObj);
+        },
+        complete: function complete() {
+          _this5.ajaxComplete();
         }
       });
     }
   }, {
     key: "ajaxSuccess",
     value: function ajaxSuccess(data) {
-      this.antiSpam = false;
-
       if (this.dataType === 'json' && Object.entries(data).length === 0) {
         console.warn('No values returned by the service.');
       }
@@ -359,8 +362,12 @@ var FormBase = /*#__PURE__*/function () {
   }, {
     key: "ajaxError",
     value: function ajaxError(error) {
-      this.antiSpam = false;
       this.$el.removeClass(this.classes.serverSuccess).addClass(this.classes.serverError);
+    }
+  }, {
+    key: "ajaxComplete",
+    value: function ajaxComplete() {
+      this.antiSpam = false;
     }
   }, {
     key: "formatFormData",

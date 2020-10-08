@@ -77,6 +77,9 @@ class FormBase{
 	};
 	
 	submitHandler(e){
+		if(this.antiSpam) {return;}
+		this.antiSpam = true;
+		
 		if (this.ajax && e) {e.preventDefault();}
 		
 		if(!this.validation.validate()){
@@ -106,6 +109,7 @@ class FormBase{
 		});
 		
 		this.$el.addClass(this.classes.invalid);
+		this.antiSpam = false;
 	}
 	
 	handleValidationSuccessField(field) {
@@ -124,9 +128,6 @@ class FormBase{
 	};
 	
 	handleAjaxSend(formData){
-		if(this.antiSpam) {return;}
-		this.antiSpam = true;
-		
 		$.ajax({
 			method: this.method,
 			url: this.action,
@@ -136,13 +137,12 @@ class FormBase{
 			cache: false,
 			contentType: false,
 			success: (successObj) => {this.ajaxSuccess(successObj)},
-			error: (errorObj) => {this.ajaxError(errorObj)}
+			error: (errorObj) => {this.ajaxError(errorObj)},
+			complete: () => {this.ajaxComplete()}
 		});
 	}
 	
 	ajaxSuccess(data){
-		this.antiSpam = false;
-		
 		if(this.dataType === 'json' && Object.entries(data).length === 0){console.warn('No values returned by the service.')}
 		this.reset();
 		
@@ -150,8 +150,11 @@ class FormBase{
 	}
 	
 	ajaxError(error){
-		this.antiSpam = false;
 		this.$el.removeClass(this.classes.serverSuccess).addClass(this.classes.serverError);
+	}
+	
+	ajaxComplete(){
+		this.antiSpam = false;
 	}
 	
 	formatFormData(data) {
