@@ -1,10 +1,9 @@
 formMe
 ========
 
-Version - 2.0.0
-- Refactor for ES6
-- Split into classes. Added a forms manager and base form class
-- Add new demo for added options
+Version - 2.0.1
+- Fix Antispam
+- Fix Formdata
 
 Dependencies
 
