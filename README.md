@@ -3,6 +3,7 @@ formMe
 
 Version - 2.0.1
 - Fix remove field
+- Data send is based on validated value instead of form value.
 
 Version - 2.0.0
 - Refactor for ES6

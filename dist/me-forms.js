@@ -293,7 +293,7 @@ var FormBase = /*#__PURE__*/function () {
       this.$el.removeClass(this.classes.invalid).addClass(this.classes.valid);
 
       if (this.ajax) {
-        this.handleAjaxSend(this.formatFormData(this.$el.serializeArray()));
+        this.handleAjaxSend(this.formatFormData(this.validation.fields));
       }
     }
   }, {
@@ -380,7 +380,7 @@ var FormBase = /*#__PURE__*/function () {
       data.forEach(function (item, index) {
         var field = $("[name=\"".concat(item.name, "\"]"));
 
-        if (item.value === "" || field.disabled) {
+        if (item.value === "" || field.disabled || item.type === 'file') {
           return;
         }
 
