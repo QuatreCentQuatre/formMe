@@ -1,6 +1,9 @@
 formMe
 ========
 
+Version - 2.0.1
+- Fix remove field
+
 Version - 2.0.0
 - Refactor for ES6
 - Split into classes. Added a forms manager and base form class

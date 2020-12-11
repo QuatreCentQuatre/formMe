@@ -4,7 +4,7 @@ class Form extends FormBase{
 
 		this.fields = [
 			{name:'name', required: false, validation: this.validateName},
-			{name:'lastname'},
+			{name:'phone', regex: new RegExp(/^\d{3}-\d{3}-\d{4}$/)},
 			{name:'copy-name', copy:'name', required: false},
 			{name:'no-value', required: false},
 			{name:'checkbox', required: false},
@@ -12,7 +12,7 @@ class Form extends FormBase{
 			{name:'select-1'},
 		];
 	}
-
+	
 	validateName(field){
 		return true;
 	}

@@ -234,7 +234,9 @@ var FormBase = /*#__PURE__*/function () {
   }, {
     key: "addField",
     value: function addField(field) {
-      if (!!this.getField(field)) {
+      if (this.fields.findIndex(function (element) {
+        return element.name === field.name;
+      }) < 0) {
         this.fields.push(field);
       } else {
         if (this.initialized) {
@@ -250,8 +252,10 @@ var FormBase = /*#__PURE__*/function () {
       var field = this.getField(name);
 
       if (field) {
-        this.fields.splice(index, 1);
-        this.validation.removeField(field);
+        this.fields.splice(this.fields.findIndex(function (element) {
+          return element.name === name;
+        }), 1);
+        this.validation.removeField(name);
       }
     }
   }, {

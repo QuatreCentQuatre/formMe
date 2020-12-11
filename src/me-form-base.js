@@ -50,7 +50,7 @@ class FormBase{
 	}
 	
 	addField(field){
-		if (!!this.getField(field)) {
+		if (this.fields.findIndex((element) => element.name === field.name) < 0) {
 			this.fields.push(field);
 		} else{
 			if(this.initialized){
@@ -65,8 +65,8 @@ class FormBase{
 		let field = this.getField(name);
 		
 		if(field){
-			this.fields.splice(index, 1);
-			this.validation.removeField(field);
+			this.fields.splice(this.fields.findIndex((element) => element.name === name), 1);
+			this.validation.removeField(name);
 		}
 	};
 	
