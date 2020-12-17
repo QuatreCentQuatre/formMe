@@ -1,9 +1,18 @@
 formMe
 ========
 
+Version - 2.0.2
+- Fix remove field
+- Data send is based on validated value instead of form value.
+
 Version - 2.0.1
 - Fix Antispam
 - Fix Formdata
+
+Version - 2.0.0
+- Refactor for ES6
+- Split into classes. Added a forms manager and base form class
+- Add new demo for added options
 
 Dependencies
 

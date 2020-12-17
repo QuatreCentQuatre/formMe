@@ -9,7 +9,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 /*
- * FormMe 2.0.1 (https://github.com/QuatreCentQuatre/formMe/)
+ * FormMe 2.0.2 (https://github.com/QuatreCentQuatre/formMe/)
  * Make form system usage easy
  *
  * Licence :
@@ -234,7 +234,9 @@ var FormBase = /*#__PURE__*/function () {
   }, {
     key: "addField",
     value: function addField(field) {
-      if (!!this.getField(field)) {
+      if (this.fields.findIndex(function (element) {
+        return element.name === field.name;
+      }) < 0) {
         this.fields.push(field);
       } else {
         if (this.initialized) {
@@ -250,8 +252,10 @@ var FormBase = /*#__PURE__*/function () {
       var field = this.getField(name);
 
       if (field) {
-        this.fields.splice(index, 1);
-        this.validation.removeField(field);
+        this.fields.splice(this.fields.findIndex(function (element) {
+          return element.name === name;
+        }), 1);
+        this.validation.removeField(name);
       }
     }
   }, {
@@ -289,7 +293,7 @@ var FormBase = /*#__PURE__*/function () {
       this.$el.removeClass(this.classes.invalid).addClass(this.classes.valid);
 
       if (this.ajax) {
-        this.handleAjaxSend(this.formatFormData(this.$el.serializeArray()));
+        this.handleAjaxSend(this.formatFormData(this.validation.fields));
       }
     }
   }, {
@@ -376,7 +380,7 @@ var FormBase = /*#__PURE__*/function () {
       data.forEach(function (item, index) {
         var field = $("[name=\"".concat(item.name, "\"]"));
 
-        if (item.value === "" || field.disabled) {
+        if (item.value === "" || field.disabled || item.type === 'file') {
           return;
         }
 
