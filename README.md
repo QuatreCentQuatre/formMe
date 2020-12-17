@@ -1,7 +1,7 @@
 formMe
 ========
 
-Version - 2.0.1
+Version - 2.0.2
 - Fix remove field
 - Data send is based on validated value instead of form value.
 
