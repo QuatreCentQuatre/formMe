@@ -1,15 +1,6 @@
 formMe
 ========
 
-Version - 2.0.2
-- Fix remove field
-- Data send is based on validated value instead of form value.
-
-Version - 2.0.0
-- Refactor for ES6
-- Split into classes. Added a forms manager and base form class
-- Add new demo for added options
-
 Dependencies
 
 - jQuery (https://jquery.com/)
@@ -129,7 +120,7 @@ If no error found, it will go through this function to remover all invalid field
 ###onValidationError(fields, errorFields)
 If error found during validation, it will pass here to show fields with error to the user.
 
-###handleValidationSuccessField(field)
+###resetFieldState(field)
 Handle what should happen to a field when it pass all validation.
 
 ###handleValidationErrorField(field)
@@ -159,8 +150,8 @@ class BasicForm extends FormBase{
         ];
     }
     
-    handleValidationSuccessField(field) {
-        super.handleValidationSuccessField(field);
+    resetFieldState(field) {
+        super.resetFieldState(field);
         //Custom code to run after field pass validation success
     }
 }
@@ -202,8 +193,8 @@ class BasicForm extends FormBase{
         ];
     }
     
-    handleValidationSuccessField(field) {
-        super.handleValidationSuccessField(field);
+    resetFieldState(field) {
+        super.resetFieldState(field);
         field.$el.siblings('.error-message').addClass('hide').attr('aria-hidden', true);
     }
     

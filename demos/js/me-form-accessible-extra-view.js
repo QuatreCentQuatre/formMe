@@ -7,11 +7,10 @@ class FormAccessibleExtra extends FormBase{
 			{name:'email', type: 'email'},
 		];
 	}
-
-    handleValidationSuccessField(field) {
+	
+		resetFieldState(field) {
 		//do not forget to reset your custom error displaying when a field is valid.
-
-        super.handleValidationSuccessField(field);
+        super.resetFieldState(field);
 
         field.$el.siblings('.error-message').addClass('hide').attr('aria-hidden', true);
     }
