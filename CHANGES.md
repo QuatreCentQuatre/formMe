@@ -2,7 +2,7 @@ formMe
 ========
 
 Version - 2.0.3
-- Merge fields data to use the validateMe reference.
+- Merge fields data to use the validateMe fields reference.
 - Revert data sent to be formatted by serializeArray.
 - Add removeFields function to remove multiple fields at once
 - Add addFields function to add multiple fields at once
