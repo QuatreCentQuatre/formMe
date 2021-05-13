@@ -9,7 +9,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 /*
- * FormMe 2.0.2 (https://github.com/QuatreCentQuatre/formMe/)
+ * FormMe 2.0.4 (https://github.com/QuatreCentQuatre/formMe/)
  * Make form system usage easy
  *
  * Licence :
@@ -17,10 +17,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  *
  * Methods:
  *
- *
- *
- *
- *
+ * initForms
+ * clearForms
  *
  */
 var FormManager = /*#__PURE__*/function () {
@@ -28,34 +26,26 @@ var FormManager = /*#__PURE__*/function () {
     _classCallCheck(this, FormManager);
 
     this.name = "FormManager";
-    this.defaults = {};
     this.forms = [];
-    this.options = {};
-    this.setOptions(options);
   }
+  /*
+  *
+  * initForms($rootElement)
+  * - Will init all forms
+  *
+  * Params:
+  * - $rootElement : Accept one parameter to define where the search of forms will start in the DOM
+  *
+  * Output:
+  * No output
+  *
+  * Results:
+  * It will instantiate all forms in DOM and trigger their init once they are all created.
+  *
+  * */
+
 
   _createClass(FormManager, [{
-    key: "setOptions",
-    value: function setOptions(options) {
-      this.options = Object.assign(this.options, this.defaults, options);
-    }
-    /*
-    *
-    * initForms($rootElement)
-    * - Will init all forms
-    *
-    * Params:
-    * - $rootElement : Accept one parameter to define where the search of forms will start in the DOM
-    *
-    * Output:
-    * No output
-    *
-    * Results:
-    * It will instantiate all forms in DOM and trigger their init once they are all created.
-    *
-    * */
-
-  }, {
     key: "initForms",
     value: function initForms() {
       var $rootElement = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : $('html');
@@ -86,9 +76,9 @@ var FormManager = /*#__PURE__*/function () {
 
         $form.attr('me:form:render', "true");
         /* Add data to form */
-        // let formData = $form.attr('me:form:data');
-        // formParams.params.data = (formData) ? JSON.parse(formData) : {};
 
+        var formData = $form.attr('me:form:data');
+        formParams.params = formData ? JSON.parse(formData) : {};
         /* Create instance of the form */
 
         var form = new Me.forms[formName](formParams);
@@ -167,6 +157,13 @@ $(document).ready(function () {
 });
 
 var FormBase = /*#__PURE__*/function () {
+  _createClass(FormBase, [{
+    key: "defaults",
+    value: function defaults() {
+      return {};
+    }
+  }]);
+
   function FormBase(options) {
     _classCallCheck(this, FormBase);
 
@@ -179,7 +176,7 @@ var FormBase = /*#__PURE__*/function () {
     };
     this.el = options.el;
     this.$el = $(options.el);
-    this.params = options.params ? options.params : {};
+    this.params = Object.assign(this.defaults(), options.params);
     this.$submit = this.$el.find('[me\\:form\\:submit]').length > 0 ? this.$el.find('[me\\:form\\:submit]') : this.$el.find('[type="submit"]');
     this.name = options.name ? options.name : 'FormBasic';
     this.fields = [];
@@ -197,29 +194,26 @@ var FormBase = /*#__PURE__*/function () {
   _createClass(FormBase, [{
     key: "initialize",
     value: function initialize() {
-      var _this = this;
-
       if (!this.dependenciesExist() || !this.requirementsExit()) return;
       this.validation = new ValidateMe(this);
-      this.fields.forEach(function (field, index) {
-        _this.addField(field);
-      });
+      this.addFields(this.fields);
+      this.fields = null;
       this.addEvents();
       this.initialized = true;
     }
   }, {
     key: "addEvents",
     value: function addEvents() {
-      var _this2 = this;
+      var _this = this;
 
       if (this.$submit) {
         this.$submit.on('click.formMe', function (e) {
-          _this2.submitHandler(e);
+          _this.submitHandler(e);
         });
       }
 
       this.$el.on('submit.formMe', function (e) {
-        _this2.submitHandler(e);
+        _this.submitHandler(e);
       });
     }
   }, {
@@ -232,36 +226,52 @@ var FormBase = /*#__PURE__*/function () {
       this.$el.off('submit.formMe');
     }
   }, {
+    key: "addFields",
+    value: function addFields(fieldsArr) {
+      var _this2 = this;
+
+      fieldsArr.forEach(function (field, index) {
+        _this2.addField(field);
+      });
+    }
+  }, {
     key: "addField",
     value: function addField(field) {
-      if (this.fields.findIndex(function (element) {
+      if (this.validation.fields.findIndex(function (element) {
         return element.name === field.name;
       }) < 0) {
-        this.fields.push(field);
+        this.validation.addField(field);
       } else {
         if (this.initialized) {
           console.warn('This field already exist', field);
         }
       }
+    }
+  }, {
+    key: "removeFields",
+    value: function removeFields(namesArr) {
+      var _this3 = this;
 
-      this.validation.addField(field);
+      namesArr.forEach(function (name, index) {
+        _this3.removeField(name);
+      });
     }
   }, {
     key: "removeField",
     value: function removeField(name) {
-      var field = this.getField(name);
+      var field = this.validation.getField(name);
 
       if (field) {
-        this.fields.splice(this.fields.findIndex(function (element) {
-          return element.name === name;
-        }), 1);
+        this.resetFieldState(this.getField(name));
         this.validation.removeField(name);
+      } else {
+        console.warn('This field does not seems to exist.', 'Field name: ' + name);
       }
     }
   }, {
     key: "getField",
     value: function getField(name) {
-      return this.fields.find(function (el) {
+      return this.validation.fields.find(function (el) {
         return el.name === name;
       });
     }
@@ -285,34 +295,34 @@ var FormBase = /*#__PURE__*/function () {
   }, {
     key: "onValidationSuccess",
     value: function onValidationSuccess(fields) {
-      var _this3 = this;
+      var _this4 = this;
 
       fields.forEach(function (field, index) {
-        _this3.handleValidationSuccessField(field);
+        _this4.resetFieldState(field);
       });
       this.$el.removeClass(this.classes.invalid).addClass(this.classes.valid);
 
       if (this.ajax) {
-        this.handleAjaxSend(this.formatFormData(this.validation.fields));
+        this.handleAjaxSend(this.formatFormData(this.$el.serializeArray()));
       }
     }
   }, {
     key: "onValidationError",
     value: function onValidationError(fields, errorFields) {
-      var _this4 = this;
+      var _this5 = this;
 
       fields.forEach(function (field, index) {
-        _this4.handleValidationSuccessField(field);
+        _this5.resetFieldState(field);
       });
       errorFields.forEach(function (field, index) {
-        _this4.handleValidationErrorField(field);
+        _this5.handleValidationErrorField(field);
       });
       this.$el.addClass(this.classes.invalid);
       this.antiSpam = false;
     }
   }, {
-    key: "handleValidationSuccessField",
-    value: function handleValidationSuccessField(field) {
+    key: "resetFieldState",
+    value: function resetFieldState(field) {
       //hide previously visible errors from a past validation
       if (field.error) {
         field.error.addClass('hide').attr('aria-hidden', true);
@@ -332,7 +342,7 @@ var FormBase = /*#__PURE__*/function () {
   }, {
     key: "handleAjaxSend",
     value: function handleAjaxSend(formData) {
-      var _this5 = this;
+      var _this6 = this;
 
       $.ajax({
         method: this.method,
@@ -343,13 +353,13 @@ var FormBase = /*#__PURE__*/function () {
         cache: false,
         contentType: false,
         success: function success(successObj) {
-          _this5.ajaxSuccess(successObj);
+          _this6.ajaxSuccess(successObj);
         },
         error: function error(errorObj) {
-          _this5.ajaxError(errorObj);
+          _this6.ajaxError(errorObj);
         },
         complete: function complete() {
-          _this5.ajaxComplete();
+          _this6.ajaxComplete();
         }
       });
     }
@@ -380,14 +390,14 @@ var FormBase = /*#__PURE__*/function () {
       data.forEach(function (item, index) {
         var field = $("[name=\"".concat(item.name, "\"]"));
 
-        if (item.value === "" || field.disabled || item.type === 'file') {
+        if (item.value === "" || field.disabled || field.attr('file')) {
           return;
         }
 
         formattedData.append(item.name, item.value);
       }); //@note serializeArray does not serialize file select elements.
 
-      this.fields.forEach(function (item, index) {
+      this.validation.fields.forEach(function (item, index) {
         if (item.file_type != undefined) {
           var field = $("[name=\"".concat(item.name, "\"]"));
 

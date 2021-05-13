@@ -1,4 +1,8 @@
 class FormBase{
+	defaults(){
+		return {};
+	}
+	
 	constructor(options){
 		this.classes = {
 			valid: 			'is-valid',
@@ -10,7 +14,7 @@ class FormBase{
 		
 		this.el 		= options.el;
 		this.$el 		= $(options.el);
-		this.params 	= (options.params) ? options.params : {};
+		this.params 	= Object.assign(this.defaults(), options.params);
 		this.$submit 	= (this.$el.find('[me\\:form\\:submit]').length > 0) ? this.$el.find('[me\\:form\\:submit]') : this.$el.find('[type="submit"]');
 		
 		this.name 		= (options.name) ? options.name : 'FormBasic';
@@ -31,9 +35,8 @@ class FormBase{
 		
 		this.validation = new ValidateMe(this);
 		
-		this.fields.forEach((field, index) => {
-			this.addField(field);
-		});
+		this.addFields(this.fields);
+		this.fields = null;
 		
 		this.addEvents();
 		this.initialized = true;
@@ -49,29 +52,41 @@ class FormBase{
 		this.$el.off('submit.formMe');
 	}
 	
+	addFields(fieldsArr){
+		fieldsArr.forEach((field, index) => {
+			this.addField(field);
+		});
+	}
+	
 	addField(field){
-		if (this.fields.findIndex((element) => element.name === field.name) < 0) {
-			this.fields.push(field);
+		if (this.validation.fields.findIndex((element) => element.name === field.name) < 0) {
+			this.validation.addField(field);
 		} else{
 			if(this.initialized){
 				console.warn('This field already exist', field);
 			}
 		}
-		
-		this.validation.addField(field);
 	}
 	
+	removeFields(namesArr) {
+		namesArr.forEach((name, index)=>{
+			this.removeField(name);
+		});
+	};
+	
 	removeField(name) {
-		let field = this.getField(name);
+		let field = this.validation.getField(name);
 		
 		if(field){
-			this.fields.splice(this.fields.findIndex((element) => element.name === name), 1);
+			this.resetFieldState(this.getField(name));
 			this.validation.removeField(name);
+		} else{
+			console.warn('This field does not seems to exist.', 'Field name: ' + name);
 		}
 	};
 	
 	getField(name) {
-		return this.fields.find((el) => {
+		return this.validation.fields.find((el) => {
 			return el.name === name;
 		})
 	};
@@ -89,19 +104,19 @@ class FormBase{
 	
 	onValidationSuccess(fields){
 		fields.forEach((field, index) => {
-			this.handleValidationSuccessField(field);
+			this.resetFieldState(field);
 		});
 		
 		this.$el.removeClass(this.classes.invalid).addClass(this.classes.valid);
 		
 		if (this.ajax) {
-			this.handleAjaxSend(this.formatFormData(this.validation.fields));
+			this.handleAjaxSend(this.formatFormData(this.$el.serializeArray()));
 		}
 	}
 	
 	onValidationError(fields, errorFields){
 		fields.forEach((field, index) => {
-			this.handleValidationSuccessField(field);
+			this.resetFieldState(field);
 		});
 		
 		errorFields.forEach((field, index) =>{
@@ -112,7 +127,7 @@ class FormBase{
 		this.antiSpam = false;
 	}
 	
-	handleValidationSuccessField(field) {
+	resetFieldState(field) {
 		//hide previously visible errors from a past validation
 		if(field.error){
 			field.error.addClass('hide').attr('aria-hidden', true);
@@ -162,12 +177,12 @@ class FormBase{
 		
 		data.forEach(function(item, index) {
 			let field = $(`[name="${item.name}"]`);
-			if(item.value === "" || field.disabled || item.type === 'file'){return;}
+			if(item.value === "" || field.disabled || field.attr('file')){return;}
 			formattedData.append(item.name, item.value);
 		});
 		
 		//@note serializeArray does not serialize file select elements.
-		this.fields.forEach(function (item, index) {
+		this.validation.fields.forEach(function (item, index) {
 			if (item.file_type != undefined) {
 				let field = $(`[name="${item.name}"]`);
 				if (field[0].files[0]) {

@@ -1,19 +1,6 @@
 formMe
 ========
 
-Version - 2.0.2
-- Fix remove field
-- Data send is based on validated value instead of form value.
-
-Version - 2.0.1
-- Fix Antispam
-- Fix Formdata
-
-Version - 2.0.0
-- Refactor for ES6
-- Split into classes. Added a forms manager and base form class
-- Add new demo for added options
-
 Dependencies
 
 - jQuery (https://jquery.com/)
@@ -77,6 +64,46 @@ class BasicForm extends FormBase{
 Me.forms['BasicForm'] = BasicForm;
 ```
 
+###Params
+You can have default params set for your form view. The way to do it is to declare the defaults function and return the object of defaults value you want.
+
+Example:
+```javascript
+class BasicForm extends FormBase{
+    defaults(){
+      return {
+        'ajaxUrl':'/path/to/route'
+      }   
+    }
+    constructor(options){
+        super(options);
+    
+        this.fields = [
+            {name:'name'},
+            {name:'email', type: 'email'},
+        ];
+    }
+}
+
+Me.forms['BasicForm'] = BasicForm;
+```
+
+The defaults params can be changed in your DOM declaration.
+
+Example:
+```html
+<form method="post" action="#" ajax="true" me:form="BasicForm" me:form:data='{"ajaxUrl":"/new/path/to/route"}'>
+    <div>
+        <input type="text" name="name" id="name" placeholder="name">
+    </div>
+    <div>
+        <input type="text" name="email" id="email" placeholder="email">
+    </div>
+    <input type="submit">
+</form>
+```
+
+
 ###Submit Button
 You can define a custom submit button by adding me:form:submit to the desired element. Otherwise, the submit type will bbe assigned as submit button
 
@@ -133,7 +160,7 @@ If no error found, it will go through this function to remover all invalid field
 ###onValidationError(fields, errorFields)
 If error found during validation, it will pass here to show fields with error to the user.
 
-###handleValidationSuccessField(field)
+###resetFieldState(field)
 Handle what should happen to a field when it pass all validation.
 
 ###handleValidationErrorField(field)
@@ -163,8 +190,8 @@ class BasicForm extends FormBase{
         ];
     }
     
-    handleValidationSuccessField(field) {
-        super.handleValidationSuccessField(field);
+    resetFieldState(field) {
+        super.resetFieldState(field);
         //Custom code to run after field pass validation success
     }
 }
@@ -206,8 +233,8 @@ class BasicForm extends FormBase{
         ];
     }
     
-    handleValidationSuccessField(field) {
-        super.handleValidationSuccessField(field);
+    resetFieldState(field) {
+        super.resetFieldState(field);
         field.$el.siblings('.error-message').addClass('hide').attr('aria-hidden', true);
     }
     
