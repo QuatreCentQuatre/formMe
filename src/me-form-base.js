@@ -1,4 +1,8 @@
 class FormBase{
+	defaults(){
+		return {};
+	}
+	
 	constructor(options){
 		this.classes = {
 			valid: 			'is-valid',
@@ -10,7 +14,7 @@ class FormBase{
 		
 		this.el 		= options.el;
 		this.$el 		= $(options.el);
-		this.params 	= (options.params) ? options.params : {};
+		this.params 	= Object.assign(this.defaults(), options.params);
 		this.$submit 	= (this.$el.find('[me\\:form\\:submit]').length > 0) ? this.$el.find('[me\\:form\\:submit]') : this.$el.find('[type="submit"]');
 		
 		this.name 		= (options.name) ? options.name : 'FormBasic';

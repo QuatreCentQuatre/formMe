@@ -64,6 +64,46 @@ class BasicForm extends FormBase{
 Me.forms['BasicForm'] = BasicForm;
 ```
 
+###Params
+You can have default params set for your form view. The way to do it is to declare the defaults function and return the object of defaults value you want.
+
+Example:
+```javascript
+class BasicForm extends FormBase{
+    defaults(){
+      return {
+        'ajaxUrl':'/path/to/route'
+      }   
+    }
+    constructor(options){
+        super(options);
+    
+        this.fields = [
+            {name:'name'},
+            {name:'email', type: 'email'},
+        ];
+    }
+}
+
+Me.forms['BasicForm'] = BasicForm;
+```
+
+The defaults params can be changed in your DOM declaration.
+
+Example:
+```html
+<form method="post" action="#" ajax="true" me:form="BasicForm" me:form:data='{"ajaxUrl":"/new/path/to/route"}'>
+    <div>
+        <input type="text" name="name" id="name" placeholder="name">
+    </div>
+    <div>
+        <input type="text" name="email" id="email" placeholder="email">
+    </div>
+    <input type="submit">
+</form>
+```
+
+
 ###Submit Button
 You can define a custom submit button by adding me:form:submit to the desired element. Otherwise, the submit type will bbe assigned as submit button
 

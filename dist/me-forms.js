@@ -86,9 +86,9 @@ var FormManager = /*#__PURE__*/function () {
 
         $form.attr('me:form:render', "true");
         /* Add data to form */
-        // let formData = $form.attr('me:form:data');
-        // formParams.params.data = (formData) ? JSON.parse(formData) : {};
 
+        var formData = $form.attr('me:form:data');
+        formParams.params = formData ? JSON.parse(formData) : {};
         /* Create instance of the form */
 
         var form = new Me.forms[formName](formParams);
@@ -167,6 +167,13 @@ $(document).ready(function () {
 });
 
 var FormBase = /*#__PURE__*/function () {
+  _createClass(FormBase, [{
+    key: "defaults",
+    value: function defaults() {
+      return {};
+    }
+  }]);
+
   function FormBase(options) {
     _classCallCheck(this, FormBase);
 
@@ -179,7 +186,7 @@ var FormBase = /*#__PURE__*/function () {
     };
     this.el = options.el;
     this.$el = $(options.el);
-    this.params = options.params ? options.params : {};
+    this.params = Object.assign(this.defaults(), options.params);
     this.$submit = this.$el.find('[me\\:form\\:submit]').length > 0 ? this.$el.find('[me\\:form\\:submit]') : this.$el.find('[type="submit"]');
     this.name = options.name ? options.name : 'FormBasic';
     this.fields = [];

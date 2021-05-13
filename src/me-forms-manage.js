@@ -1,5 +1,5 @@
 /*
- * FormMe 2.0.0 (https://github.com/QuatreCentQuatre/formMe/)
+ * FormMe 2.0.4 (https://github.com/QuatreCentQuatre/formMe/)
  * Make form system usage easy
  *
  * Licence :
@@ -7,25 +7,15 @@
  *
  * Methods:
  *
- *
- *
- *
- *
+ * initForms
+ * clearForms
  *
  */
 
 class FormManager {
 	constructor(options) {
 		this.name     = "FormManager";
-		this.defaults = {};
 		this.forms    = [];
-		this.options = {};
-
-		this.setOptions(options);
-	}
-
-	setOptions(options) {
-		this.options = Object.assign(this.options, this.defaults, options);
 	}
 
 	/*
@@ -66,8 +56,8 @@ class FormManager {
 			$form.attr('me:form:render', "true");
 
 			/* Add data to form */
-			// let formData = $form.attr('me:form:data');
-			// formParams.params.data = (formData) ? JSON.parse(formData) : {};
+			let formData = $form.attr('me:form:data');
+			formParams.params = (formData) ? JSON.parse(formData) : {};
 
 			/* Create instance of the form */
 			let form = new Me.forms[formName](formParams);

@@ -1,6 +1,9 @@
 formMe
 ========
 
+Version - 2.0.4
+- Fix me:form:data
+
 Version - 2.0.3
 - Merge fields data to use the validateMe fields reference.
 - Revert data sent to be formatted by serializeArray.
