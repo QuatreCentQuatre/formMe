@@ -1,6 +1,9 @@
 formMe
 ========
 
+Version - 2.1.0
+- Add recaptcha detection for automatic recaptcha validation before ajax call
+
 Version - 2.0.4
 - Fix me:form:data
 
