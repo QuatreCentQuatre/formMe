@@ -250,3 +250,18 @@ class BasicForm extends FormBase{
 
 Me.forms['BasicForm'] = BasicForm;
 ```
+
+##Recaptcha v3
+
+If you are loading Recaptcha v3 into your project, FormMe has an automatic detection to ensure recaptcha validation before ajax call.
+
+###How does it work?
+
+If you have set `ajax="true"` on your form and if `grecaptcha` is defined, FormMe will perform a recaptcha validation before the ajax call.
+
+To perform that validation, FormMe will expect :
+- a `window.SETTINGS.RECAPTCHA_KEY` containing the recaptcha site key to use
+- a `recaptcha-action` attribute on your `<form>` containing the action to use
+- a `<input type="hidden" name="g-recaptcha-response">` into the `<form>` to store the validation token
+
+In case you have set `ajax="true"` on your form and `grecaptcha` is defined but you want to prevent FormMe to perform a recaptcha validation, you can add `recaptcha="false"` on your `<form>`

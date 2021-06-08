@@ -25,7 +25,14 @@ class FormBase{
 		this.dataType 	= 'json';
 		this.antiSpam 	= false;
 		this.initialized = false;
-		
+
+		this.recaptcha = (typeof grecaptcha !== 'undefined' && this.ajax && (!this.el.hasAttribute('recaptcha') || this.$el.attr('recaptcha') !== "false"));
+		if (this.recaptcha) {
+			this.recaptchaAction = this.$el.attr('recaptcha-action') ?? '';
+			this.recaptchaInputName = 'g-recaptcha-response';
+			this.$recaptchaInput = this.$el.find(`input[name="${this.recaptchaInputName}"]`);
+		}
+
 		this.options = {debug: (window.SETTINGS && SETTINGS.DEBUG_MODE) ? SETTINGS.DEBUG_MODE : false};
 	}
 	
@@ -110,7 +117,14 @@ class FormBase{
 		this.$el.removeClass(this.classes.invalid).addClass(this.classes.valid);
 		
 		if (this.ajax) {
-			this.handleAjaxSend(this.formatFormData(this.$el.serializeArray()));
+			if (this.recaptcha) {
+				grecaptcha.execute(SETTINGS.RECAPTCHA_KEY, { action: this.recaptchaAction }).then((token) => {
+					this.$recaptchaInput.val(token);
+					this.handleAjaxSend(this.formatFormData(this.$el.serializeArray()));
+				});
+			} else {
+				this.handleAjaxSend(this.formatFormData(this.$el.serializeArray()));
+			}
 		}
 	}
 	
@@ -244,6 +258,23 @@ class FormBase{
 			isValid = false;
 			console.error(`${this.name} needs to have a submit button`);
 		}
+
+		if (this.recaptcha) {
+			if (!window.SETTINGS || !SETTINGS.RECAPTCHA_KEY) {
+				isValid = false;
+				console.error(`SETTINGS.RECAPTCHA_KEY needs to be defined`);
+			}
+
+			if (!this.recaptchaAction) {
+				isValid = false;
+				console.error(`${this.name} needs to have a recaptcha-action attribute`);
+			}
+
+			if (this.$recaptchaInput.length === 0) {
+				isValid = false;
+				console.error(`${this.name} needs to have a input[name="${this.recaptchaInputName}"]`);
+			}
+		}
 		
 		return isValid;
 	}
@@ -332,6 +363,36 @@ class FormBase{
 	}
 	
 	get initialized(){return this._initialized;}
+
+	set recaptcha(bool) {
+		if (typeof bool !== "boolean") {
+			console.error('The recaptcha parameter must be a boolean');
+			return;
+		}
+
+		this._recaptcha = bool;
+	}
+	get recaptcha() { return this._recaptcha; }
+
+	set recaptchaAction(string) {
+		if (typeof string !== "string") {
+			console.error('The recaptchaAction parameter must be a string');
+			return;
+		}
+
+		this._recaptchaAction = string;
+	}
+	get recaptchaAction() { return this._recaptchaAction; }
+
+	set recaptchaInputName(string) {
+		if (typeof string !== "string") {
+			console.error('The recaptchaInputName parameter must be a string');
+			return;
+		}
+
+		this._recaptchaInputName = string;
+	}
+	get recaptchaInputName() { return this._recaptchaInputName; }
 }
 
 Me.forms['FormBase'] = FormBase;

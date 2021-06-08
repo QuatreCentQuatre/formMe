@@ -1,5 +1,5 @@
 /*
- * FormMe 2.0.4 (https://github.com/QuatreCentQuatre/formMe/)
+ * FormMe 2.1.0 (https://github.com/QuatreCentQuatre/formMe/)
  * Make form system usage easy
  *
  * Licence :
