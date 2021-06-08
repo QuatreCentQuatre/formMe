@@ -186,6 +186,16 @@ var FormBase = /*#__PURE__*/function () {
     this.dataType = 'json';
     this.antiSpam = false;
     this.initialized = false;
+    this.recaptcha = typeof grecaptcha !== 'undefined' && this.ajax && (!this.el.hasAttribute('recaptcha') || this.$el.attr('recaptcha') !== "false");
+
+    if (this.recaptcha) {
+      var _this$$el$attr;
+
+      this.recaptchaAction = (_this$$el$attr = this.$el.attr('recaptcha-action')) !== null && _this$$el$attr !== void 0 ? _this$$el$attr : '';
+      this.recaptchaInputName = 'g-recaptcha-response';
+      this.$recaptchaInput = this.$el.find("input[name=\"".concat(this.recaptchaInputName, "\"]"));
+    }
+
     this.options = {
       debug: window.SETTINGS && SETTINGS.DEBUG_MODE ? SETTINGS.DEBUG_MODE : false
     };
@@ -303,7 +313,17 @@ var FormBase = /*#__PURE__*/function () {
       this.$el.removeClass(this.classes.invalid).addClass(this.classes.valid);
 
       if (this.ajax) {
-        this.handleAjaxSend(this.formatFormData(this.$el.serializeArray()));
+        if (this.recaptcha) {
+          grecaptcha.execute(SETTINGS.RECAPTCHA_KEY, {
+            action: this.recaptchaAction
+          }).then(function (token) {
+            _this4.$recaptchaInput.val(token);
+
+            _this4.handleAjaxSend(_this4.formatFormData(_this4.$el.serializeArray()));
+          });
+        } else {
+          this.handleAjaxSend(this.formatFormData(this.$el.serializeArray()));
+        }
       }
     }
   }, {
@@ -463,6 +483,23 @@ var FormBase = /*#__PURE__*/function () {
         console.error("".concat(this.name, " needs to have a submit button"));
       }
 
+      if (this.recaptcha) {
+        if (!window.SETTINGS || !SETTINGS.RECAPTCHA_KEY) {
+          isValid = false;
+          console.error("SETTINGS.RECAPTCHA_KEY needs to be defined");
+        }
+
+        if (!this.recaptchaAction) {
+          isValid = false;
+          console.error("".concat(this.name, " needs to have a recaptcha-action attribute"));
+        }
+
+        if (this.$recaptchaInput.length === 0) {
+          isValid = false;
+          console.error("".concat(this.name, " needs to have a input[name=\"").concat(this.recaptchaInputName, "\"]"));
+        }
+      }
+
       return isValid;
     }
   }, {
@@ -574,6 +611,45 @@ var FormBase = /*#__PURE__*/function () {
     },
     get: function get() {
       return this._initialized;
+    }
+  }, {
+    key: "recaptcha",
+    set: function set(bool) {
+      if (typeof bool !== "boolean") {
+        console.error('The recaptcha parameter must be a boolean');
+        return;
+      }
+
+      this._recaptcha = bool;
+    },
+    get: function get() {
+      return this._recaptcha;
+    }
+  }, {
+    key: "recaptchaAction",
+    set: function set(string) {
+      if (typeof string !== "string") {
+        console.error('The recaptchaAction parameter must be a string');
+        return;
+      }
+
+      this._recaptchaAction = string;
+    },
+    get: function get() {
+      return this._recaptchaAction;
+    }
+  }, {
+    key: "recaptchaInputName",
+    set: function set(string) {
+      if (typeof string !== "string") {
+        console.error('The recaptchaInputName parameter must be a string');
+        return;
+      }
+
+      this._recaptchaInputName = string;
+    },
+    get: function get() {
+      return this._recaptchaInputName;
     }
   }]);
 
