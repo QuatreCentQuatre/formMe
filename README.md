@@ -120,6 +120,7 @@ You can define a custom submit button by adding me:form:submit to the desired el
 - file_size: (Number) Filesize allowed in kb
 - file_type: (Array) Types allowed. Exemple: ['.png', '.jpg']
 - error: (jQuery Element) Single element that will automatically show on error. See me-form-accessible-view.js in demo
+- mask_option: (Object IMask Options) //See https://imask.js.org/
 
 ## Customization
 

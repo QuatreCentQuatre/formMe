@@ -1,6 +1,10 @@
 formMe
 ========
 
+Version - 2.2.0
+- Update validateMe to have IMask
+- Doc update to have example of IMask
+
 Version - 2.1.0
 - Add recaptcha detection for automatic recaptcha validation before ajax call
 

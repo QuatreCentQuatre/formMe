@@ -40,7 +40,7 @@ class FormBase{
 		if(!this.dependenciesExist() || !this.requirementsExit())
 			return;
 		
-		this.validation = new ValidateMe(this);
+		this.validation = new Me.validate(this);
 		
 		this.addFields(this.fields);
 		this.fields = null;
