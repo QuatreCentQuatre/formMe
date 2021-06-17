@@ -195,7 +195,7 @@ class FormBase{
 			let field = this.getField(item.name);
 			let value = item.value;
 			// @NOTE: sometimes this.getField() returns undefined because some fields are not into the fields definition (like csrf or recaptcha fields)
-			if (typeof field !== 'undefined' && field.hasOwnProperty('format') && typeof field.format === 'function') {
+			if (typeof field !== 'undefined' && field.hasOwnProperty('format')) {
 				value = field.format(value);
 			}
 			formattedData.append(item.name, value);
