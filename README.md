@@ -121,6 +121,7 @@ You can define a custom submit button by adding me:form:submit to the desired el
 - file_type: (Array) Types allowed. Exemple: ['.png', '.jpg']
 - error: (jQuery Element) Single element that will automatically show on error. See me-form-accessible-view.js in demo
 - mask_option: (Object IMask Options) //See https://imask.js.org/
+- format: (Function) Function to format the field value before sending data through ajax call
 
 ## Customization
 
@@ -143,6 +144,28 @@ class BasicForm extends FormBase{
         // Do your validation and change isValid if it's not the case
 
         return isValid;
+    }
+}
+
+Me.forms['BasicForm'] = BasicForm;
+```
+
+### Format
+If you have to format a field value before sending it through the ajax call you can use a custom function to format the value.
+The function will automatically receive the field value.
+
+```javascript
+class BasicForm extends FormBase{
+    constructor(options){
+        super(options);
+        
+        this.fields = [
+            {name:'name', format: this.toUppercase.bind(this)},
+        ];
+    }
+
+    toUppercase(value){
+        return value.toUpperCase();
     }
 }
 

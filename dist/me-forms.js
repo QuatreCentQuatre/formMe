@@ -9,7 +9,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 /*
- * FormMe 2.1.0 (https://github.com/QuatreCentQuatre/formMe/)
+ * FormMe 2.3.0 (https://github.com/QuatreCentQuatre/formMe/)
  * Make form system usage easy
  *
  * Licence :
@@ -157,6 +157,13 @@ $(document).ready(function () {
 });
 
 var FormBase = /*#__PURE__*/function () {
+  _createClass(FormBase, [{
+    key: "defaults",
+    value: function defaults() {
+      return {};
+    }
+  }]);
+
   function FormBase(options) {
     _classCallCheck(this, FormBase);
 
@@ -195,11 +202,6 @@ var FormBase = /*#__PURE__*/function () {
   }
 
   _createClass(FormBase, [{
-    key: "defaults",
-    value: function defaults() {
-      return {};
-    }
-  }, {
     key: "initialize",
     value: function initialize() {
       if (!this.dependenciesExist() || !this.requirementsExit()) return;
@@ -404,15 +406,25 @@ var FormBase = /*#__PURE__*/function () {
   }, {
     key: "formatFormData",
     value: function formatFormData(data) {
+      var _this7 = this;
+
       var formattedData = new FormData();
       data.forEach(function (item, index) {
-        var field = $("[name=\"".concat(item.name, "\"]"));
+        var $field = $("[name=\"".concat(item.name, "\"]"));
 
-        if (item.value === "" || field.disabled || field.attr('file')) {
+        if (item.value === "" || $field.disabled || $field.attr('file')) {
           return;
         }
 
-        formattedData.append(item.name, item.value);
+        var field = _this7.getField(item.name);
+
+        var value = item.value; // @NOTE: sometimes this.getField() returns undefined because some fields are not into the fields definition (like csrf or recaptcha fields)
+
+        if (typeof field !== 'undefined' && field.hasOwnProperty('format') && typeof field.format === 'function') {
+          value = field.format(value);
+        }
+
+        formattedData.append(item.name, value);
       }); //@note serializeArray does not serialize file select elements.
 
       this.validation.fields.forEach(function (item, index) {
@@ -513,9 +525,6 @@ var FormBase = /*#__PURE__*/function () {
     }
   }, {
     key: "name",
-    get: function get() {
-      return this._name;
-    },
     set: function set(name) {
       if (typeof name !== "string") {
         console.error('The name parameter must be a string');
@@ -523,12 +532,12 @@ var FormBase = /*#__PURE__*/function () {
       }
 
       this._name = name;
+    },
+    get: function get() {
+      return this._name;
     }
   }, {
     key: "dataType",
-    get: function get() {
-      return this._dataType;
-    },
     set: function set(dataType) {
       if (typeof dataType !== "string") {
         console.error('The dataType parameter must be a string');
@@ -536,12 +545,12 @@ var FormBase = /*#__PURE__*/function () {
       }
 
       this._dataType = dataType;
+    },
+    get: function get() {
+      return this._dataType;
     }
   }, {
     key: "ajax",
-    get: function get() {
-      return this._ajax;
-    },
     set: function set(bool) {
       if (typeof bool !== "boolean") {
         console.error('The bool parameter must be a boolean');
@@ -549,12 +558,12 @@ var FormBase = /*#__PURE__*/function () {
       }
 
       this._ajax = bool;
+    },
+    get: function get() {
+      return this._ajax;
     }
   }, {
     key: "method",
-    get: function get() {
-      return this._method;
-    },
     set: function set(method) {
       if (typeof method !== "string") {
         console.error('The method parameter must be a string');
@@ -562,12 +571,12 @@ var FormBase = /*#__PURE__*/function () {
       }
 
       this._method = method;
+    },
+    get: function get() {
+      return this._method;
     }
   }, {
     key: "action",
-    get: function get() {
-      return this._action;
-    },
     set: function set(action) {
       if (typeof action !== "string") {
         console.error('The method parameter must be a string');
@@ -575,12 +584,12 @@ var FormBase = /*#__PURE__*/function () {
       }
 
       this._action = action;
+    },
+    get: function get() {
+      return this._action;
     }
   }, {
     key: "antiSpam",
-    get: function get() {
-      return this._antiSpam;
-    },
     set: function set(bool) {
       if (typeof bool !== "boolean") {
         console.error('The bool parameter must be a boolean');
@@ -588,12 +597,12 @@ var FormBase = /*#__PURE__*/function () {
       }
 
       this._antiSpam = bool;
+    },
+    get: function get() {
+      return this._antiSpam;
     }
   }, {
     key: "fields",
-    get: function get() {
-      return this._fields;
-    },
     set: function set(fields) {
       if (_typeof(fields) !== "object" && fields.length > 0) {
         console.error('The fields parameter must be an array');
@@ -601,20 +610,20 @@ var FormBase = /*#__PURE__*/function () {
       }
 
       this._fields = fields;
+    },
+    get: function get() {
+      return this._fields;
     }
   }, {
     key: "initialized",
-    get: function get() {
-      return this._initialized;
-    },
     set: function set(bool) {
       this._initialized = bool;
+    },
+    get: function get() {
+      return this._initialized;
     }
   }, {
     key: "recaptcha",
-    get: function get() {
-      return this._recaptcha;
-    },
     set: function set(bool) {
       if (typeof bool !== "boolean") {
         console.error('The recaptcha parameter must be a boolean');
@@ -622,12 +631,12 @@ var FormBase = /*#__PURE__*/function () {
       }
 
       this._recaptcha = bool;
+    },
+    get: function get() {
+      return this._recaptcha;
     }
   }, {
     key: "recaptchaAction",
-    get: function get() {
-      return this._recaptchaAction;
-    },
     set: function set(string) {
       if (typeof string !== "string") {
         console.error('The recaptchaAction parameter must be a string');
@@ -635,12 +644,12 @@ var FormBase = /*#__PURE__*/function () {
       }
 
       this._recaptchaAction = string;
+    },
+    get: function get() {
+      return this._recaptchaAction;
     }
   }, {
     key: "recaptchaInputName",
-    get: function get() {
-      return this._recaptchaInputName;
-    },
     set: function set(string) {
       if (typeof string !== "string") {
         console.error('The recaptchaInputName parameter must be a string');
@@ -648,6 +657,9 @@ var FormBase = /*#__PURE__*/function () {
       }
 
       this._recaptchaInputName = string;
+    },
+    get: function get() {
+      return this._recaptchaInputName;
     }
   }]);
 

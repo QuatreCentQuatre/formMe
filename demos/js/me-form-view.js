@@ -14,11 +14,16 @@ class Form extends FormBase{
 				mask: '000-000-000',
 					lazy: false
 				}},
+			{name:'format', format: this.toUppercase.bind(this)},
 		];
 	}
 	
 	validateName(field){
 		return true;
+	}
+
+	toUppercase(value) {
+		return value.toUpperCase();
 	}
 }
 
