@@ -189,14 +189,20 @@ class FormBase{
 	formatFormData(data) {
 		let formattedData = new FormData();
 		
-		data.forEach(function(item, index) {
-			let field = $(`[name="${item.name}"]`);
-			if(item.value === "" || field.disabled || field.attr('file')){return;}
-			formattedData.append(item.name, item.value);
+		data.forEach((item, index) => {
+			let $field = $(`[name="${item.name}"]`);
+			if(item.value === "" || $field.disabled || $field.attr('file')){return;}
+			let field = this.getField(item.name);
+			let value = item.value;
+			// @NOTE: sometimes this.getField() returns undefined because some fields are not into the fields definition (like csrf or recaptcha fields)
+			if (typeof field !== 'undefined' && field.hasOwnProperty('format')) {
+				value = field.format(value);
+			}
+			formattedData.append(item.name, value);
 		});
 		
 		//@note serializeArray does not serialize file select elements.
-		this.validation.fields.forEach(function (item, index) {
+		this.validation.fields.forEach((item, index) => {
 			if (item.file_type != undefined) {
 				let field = $(`[name="${item.name}"]`);
 				if (field[0].files[0]) {
