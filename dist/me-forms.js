@@ -9,7 +9,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 /*
- * FormMe 2.1.0 (https://github.com/QuatreCentQuatre/formMe/)
+ * FormMe 2.3.0 (https://github.com/QuatreCentQuatre/formMe/)
  * Make form system usage easy
  *
  * Licence :
@@ -404,15 +404,25 @@ var FormBase = /*#__PURE__*/function () {
   }, {
     key: "formatFormData",
     value: function formatFormData(data) {
+      var _this7 = this;
+
       var formattedData = new FormData();
       data.forEach(function (item, index) {
-        var field = $("[name=\"".concat(item.name, "\"]"));
+        var $field = $("[name=\"".concat(item.name, "\"]"));
 
-        if (item.value === "" || field.disabled || field.attr('file')) {
+        if (item.value === "" || $field.disabled || $field.attr('file')) {
           return;
         }
 
-        formattedData.append(item.name, item.value);
+        var field = _this7.getField(item.name);
+
+        var value = item.value; // @NOTE: sometimes this.getField() returns undefined because some fields are not into the fields definition (like csrf or recaptcha fields)
+
+        if (typeof field !== 'undefined' && field.hasOwnProperty('format')) {
+          value = field.format(value);
+        }
+
+        formattedData.append(item.name, value);
       }); //@note serializeArray does not serialize file select elements.
 
       this.validation.fields.forEach(function (item, index) {

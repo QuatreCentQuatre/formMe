@@ -1,6 +1,9 @@
 formMe
 ========
 
+Version - 2.3.0
+- Add format param into field definition to allow function to format field value before ajax call
+
 Version - 2.2.0
 - Update validateMe to have IMask
 - Doc update to have example of IMask
