@@ -1,6 +1,6 @@
 <?php
-$p = new stdClass();
-$p->name = 'name1';
-echo json_encode($p);
+var_dump($_FILES);
+var_dump('--------------');
+var_dump($_POST);
 die();
 ?>

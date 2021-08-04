@@ -1,6 +1,9 @@
 formMe
 ========
 
+Version - 2.3.1
+- Give possibility to access files uploaded via $_FILES
+
 Version - 2.3.0
 - Add format param into field definition to allow function to format field value before ajax call
 
