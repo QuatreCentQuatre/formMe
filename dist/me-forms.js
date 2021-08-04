@@ -430,15 +430,15 @@ var FormBase = /*#__PURE__*/function () {
           var field = $("[name=\"".concat(item.name, "\"]"));
 
           if (field[0].files[0]) {
-            var filesArr = [];
+            if (!item.name.includes('[]')) {
+              item.name = "".concat(item.name, "[]");
+            }
 
             for (var prop in field[0].files) {
               if (field[0].files[prop].name && field[0].files[prop].size) {
-                filesArr.push(field[0].files[prop]);
+                formattedData.append(item.name, field[0].files[prop]);
               }
             }
-
-            formattedData.append(item.name, filesArr);
           }
         }
       });
