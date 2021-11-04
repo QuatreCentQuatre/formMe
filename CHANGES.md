@@ -1,6 +1,9 @@
 formMe
 ========
 
+Version - 2.3.2
+- Change recaptcha detection on submit
+
 Version - 2.3.1
 - Give possibility to access files uploaded via $_FILES
 
