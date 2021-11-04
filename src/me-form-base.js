@@ -26,7 +26,7 @@ class FormBase{
 		this.antiSpam 	= false;
 		this.initialized = false;
 
-		this.recaptcha = (typeof grecaptcha !== 'undefined' && this.ajax && (!this.el.hasAttribute('recaptcha') || this.$el.attr('recaptcha') !== "false"));
+		this.recaptcha = (this.ajax && (!this.el.hasAttribute('recaptcha') || this.$el.attr('recaptcha') !== "false"));
 		if (this.recaptcha) {
 			this.recaptchaAction = this.$el.attr('recaptcha-action') ?? '';
 			this.recaptchaInputName = 'g-recaptcha-response';
@@ -117,7 +117,7 @@ class FormBase{
 		this.$el.removeClass(this.classes.invalid).addClass(this.classes.valid);
 		
 		if (this.ajax) {
-			if (this.recaptcha) {
+			if (this.recaptcha && typeof grecaptcha !== 'undefined') {
 				grecaptcha.execute(SETTINGS.RECAPTCHA_KEY, { action: this.recaptchaAction }).then((token) => {
 					this.$recaptchaInput.val(token);
 					this.handleAjaxSend(this.formatFormData(this.$el.serializeArray()));

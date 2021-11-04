@@ -179,7 +179,7 @@ var FormBase = /*#__PURE__*/function () {
     this.dataType = 'json';
     this.antiSpam = false;
     this.initialized = false;
-    this.recaptcha = typeof grecaptcha !== 'undefined' && this.ajax && (!this.el.hasAttribute('recaptcha') || this.$el.attr('recaptcha') !== "false");
+    this.recaptcha = this.ajax && (!this.el.hasAttribute('recaptcha') || this.$el.attr('recaptcha') !== "false");
 
     if (this.recaptcha) {
       var _this$$el$attr;
@@ -311,7 +311,7 @@ var FormBase = /*#__PURE__*/function () {
       this.$el.removeClass(this.classes.invalid).addClass(this.classes.valid);
 
       if (this.ajax) {
-        if (this.recaptcha) {
+        if (this.recaptcha && typeof grecaptcha !== 'undefined') {
           grecaptcha.execute(SETTINGS.RECAPTCHA_KEY, {
             action: this.recaptchaAction
           }).then(function (token) {
