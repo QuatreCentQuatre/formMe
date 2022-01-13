@@ -9,7 +9,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 /*
- * FormMe 2.3.0 (https://github.com/QuatreCentQuatre/formMe/)
+ * FormMe 2.3.3 (https://github.com/QuatreCentQuatre/formMe/)
  * Make form system usage easy
  *
  * Licence :
@@ -312,7 +312,7 @@ var FormBase = /*#__PURE__*/function () {
 
       if (this.ajax) {
         if (this.recaptcha && typeof grecaptcha !== 'undefined') {
-          grecaptcha.execute(SETTINGS.RECAPTCHA_KEY, {
+          grecaptcha.execute(SETTINGS.RECAPTCHA_SITE_KEY, {
             action: this.recaptchaAction
           }).then(function (token) {
             _this4.$recaptchaInput.val(token);
@@ -492,9 +492,9 @@ var FormBase = /*#__PURE__*/function () {
       }
 
       if (this.recaptcha) {
-        if (!window.SETTINGS || !SETTINGS.RECAPTCHA_KEY) {
+        if (!window.SETTINGS || !SETTINGS.RECAPTCHA_SITE_KEY) {
           isValid = false;
-          console.error("SETTINGS.RECAPTCHA_KEY needs to be defined");
+          console.error("SETTINGS.RECAPTCHA_SITE_KEY needs to be defined");
         }
 
         if (!this.recaptchaAction) {
