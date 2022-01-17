@@ -118,7 +118,7 @@ class FormBase{
 		
 		if (this.ajax) {
 			if (this.recaptcha && typeof grecaptcha !== 'undefined') {
-				grecaptcha.execute(SETTINGS.RECAPTCHA_KEY, { action: this.recaptchaAction }).then((token) => {
+				grecaptcha.execute(SETTINGS.RECAPTCHA_SITE_KEY, { action: this.recaptchaAction }).then((token) => {
 					this.$recaptchaInput.val(token);
 					this.handleAjaxSend(this.formatFormData(this.$el.serializeArray()));
 				});
@@ -267,9 +267,9 @@ class FormBase{
 		}
 
 		if (this.recaptcha) {
-			if (!window.SETTINGS || !SETTINGS.RECAPTCHA_KEY) {
+			if (!window.SETTINGS || !SETTINGS.RECAPTCHA_SITE_KEY) {
 				isValid = false;
-				console.error(`SETTINGS.RECAPTCHA_KEY needs to be defined`);
+				console.error(`SETTINGS.RECAPTCHA_SITE_KEY needs to be defined`);
 			}
 
 			if (!this.recaptchaAction) {

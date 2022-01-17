@@ -284,7 +284,7 @@ If you are loading Recaptcha v3 into your project, FormMe has an automatic detec
 If you have set `ajax="true"` on your form and if `grecaptcha` is defined, FormMe will perform a recaptcha validation before the ajax call.
 
 To perform that validation, FormMe will expect :
-- a `window.SETTINGS.RECAPTCHA_KEY` containing the recaptcha site key to use
+- a `window.SETTINGS.RECAPTCHA_SITE_KEY` containing the recaptcha site key to use
 - a `recaptcha-action` attribute on your `<form>` containing the action to use
 - a `<input type="hidden" name="g-recaptcha-response">` into the `<form>` to store the validation token
 
