@@ -1,6 +1,10 @@
 formMe
 ========
 
+Version - 2.3.3
+- Expecting window.SETTINGS.RECAPTCHA_SITE_KEY instead of window.SETTINGS.RECAPTCHA_KEY
+- Added recaptcha="false" on <form>s in demo to prevent errors
+
 Version - 2.3.2
 - Change recaptcha detection on submit
 

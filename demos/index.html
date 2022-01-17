@@ -14,7 +14,7 @@
 
 	<h2>A typical form.</h2>
 
-	<form method="post" action="http://localhost:8888/formMe/demos/test.php" ajax="true" id="formES" me:form="Form"  me:form:data='{"extend":"extend"}'>
+	<form method="post" action="http://localhost:8888/formMe/demos/test.php" ajax="true" recaptcha="false" id="formES" me:form="Form"  me:form:data='{"extend":"extend"}'>
 		<div>
 			<input type="text" name="name" id="name" placeholder="name">
 		</div>
@@ -52,7 +52,7 @@
 
 	<h2>An accessible form with error message read by screen readers.</h2>
 
-	<form method="post" action="test.php" ajax="true" id="formESAccessible" me:form="FormAccessible">
+	<form method="post" action="test.php" ajax="true" recaptcha="false" id="formESAccessible" me:form="FormAccessible">
 		<div>
 			<input type="text" name="name" id="name-accessible" placeholder="name">
 			<p class="error-message hide" id="name-error-message" aria-hidden="true" role="alert" aria-atomic="true">Please enter a name!</p>
@@ -66,7 +66,7 @@
 
 	<h2>An accessible form with error message read by screen readers. Differents error messages for differents error types</h2>
 
-	<form method="post" action="test.php" ajax="true" id="formESAccessibleExtra" me:form="FormAccessibleExtra">
+	<form method="post" action="test.php" ajax="true" recaptcha="false" id="formESAccessibleExtra" me:form="FormAccessibleExtra">
 		<div>
 			<input type="text" name="name" id="name-accessible-extra" placeholder="name">
 			<p class="error-message hide" data-error-code="empty"  aria-hidden="true" role="alert" aria-atomic="true">Please enter a name!</p>
