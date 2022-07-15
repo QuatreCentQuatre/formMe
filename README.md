@@ -1,6 +1,8 @@
 formMe
 ========
 
+IMPORTANT NOTE: This repository has been archived and migrated to Bitbucket.
+
 Dependencies
 
 - jQuery (https://jquery.com/)
